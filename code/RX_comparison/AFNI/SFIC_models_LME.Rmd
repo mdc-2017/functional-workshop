@@ -1,0 +1,71 @@
+---
+title: "make_3dLME_models"
+output: html_document
+---
+
+This script creates the model input for the 3dLME model. It takes first-level FX contrasts (each condition > rest) and age covariates to 
+
+# load packages
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+# load data
+```{r}
+covariates = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv')
+fxCons = data.frame(file = list.files('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/'))
+```
+
+# tidy data
+```{r}
+
+covariates = covariates %>%
+  rename("Subj" = SID,
+         "gender" = Gender) %>%
+  mutate(Subj = sprintf("s%03d", Subj),
+         age_c = age-13,
+         age_c2 = age_c^2,
+         puberty_c = pds-2.5,
+         puberty_c2 = puberty_c^2,
+         gender = ifelse(gender == "F", "female",
+                  ifelse(gender == "M", "male", NA))) %>%
+  select(Subj, wavenum, gender, starts_with("age_c"), starts_with("puberty_c"))
+
+fxCons = fxCons %>%
+  extract(file, c("Subj","wavenum","con"), regex = "(s[0-9]{3})_t([0-3]{1})_(con_[0-4]{4}).nii", remove = FALSE) %>%
+  mutate(domain = ifelse(con %in% c("con_0001", "con_0003"), "academic", "social"),
+         target = ifelse(con %in% c("con_0001", "con_0002"), "self", "other"),
+         InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file,' /'),
+         wavenum = as.integer(wavenum))
+```
+
+# exclude subjects based on motion
+```{r}
+motion.exclusions = c('s002_t1', 's004_t1', 's008_t1', 's011_t1', 's017_t1', 's026_t1', 's033_t2', 's034_t1', 's041_t1', 's044_t1', 's047_t1', 's051_t1', 's054_t1', 's057_t1', 's059_t1', 's061_t1', 's063_t1', 's070_t2', 's074_t1', 's074_t2', 's078_t1', 's084_t1', 's090_t2', 's090_t3', 's094_t1', 's094_t2', 's096_t1')
+
+included.motion = fxCons %>% filter(!grepl(paste(motion.exclusions,collapse="|"), file))
+```
+
+# exclude additional subjects that do not have all 3 timepoints
+```{r}
+inclusions.3Ts = c('s005', 's016', 's018', 's019', 's022', 's023', 's024', 's029', 's030', 's032', 's035', 's038', 's040', 's042', 's045', 's058', 's064', 's065', 's072', 's073', 's081', 's089')
+
+included.3Ts = fxCons %>% filter(grepl(paste(inclusions.3Ts, collapse="|"), Subj))
+```
+
+# merge data
+```{r}
+age.motion = left_join(included.motion, covariates, by = c("Subj", "wavenum")) %>%
+  select(Subj, target, domain, starts_with("age_c"), InputFile) %>%
+  filter(!is.na(age_c))
+
+age.3Ts = left_join(included.3Ts, covariates, by = c("Subj", "wavenum")) %>%
+  select(Subj, target, domain, starts_with("age_c"), InputFile) %>%
+  filter(!is.na(age_c))
+```
+
+# write files
+```{r}
+write.table(age.motion, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_motionExclusions.txt', sep = "\t", quote=FALSE, row.names = FALSE)
+write.table(age.3Ts, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_3TsExclusions.txt', sep = "\t", quote=FALSE, row.names = FALSE)
+```
