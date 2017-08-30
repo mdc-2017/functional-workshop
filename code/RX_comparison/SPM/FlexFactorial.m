@@ -3,7 +3,7 @@
 % spm SPM - SPM12 (6470)
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
-matlabbatch{1}.spm.stats.factorial_design.dir = {'/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/SPM/flexFactorial'};
+matlabbatch{1}.spm.stats.factorial_design.dir = {'/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/SPM/'};
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).name = 'SelfOther';
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).dept = 1;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).variance = 0;
