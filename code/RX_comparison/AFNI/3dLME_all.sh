@@ -21,10 +21,10 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 #	- gltCode k = contrast code for contrast k
 #	- datatable = data structure with a header
 
-3dLME -prefix age_3TsExclusions \
+3dLME -prefix all \
 	-jobs 8 \
 	-model  "target*domain*age_c+target*domain*age_c2" \
-	-resid	age_3TsExclusions_residuals	\
+	-resid	all_residuals	\
 	-ranEff "~1+age_c" \
 	-SS_type 3 \
 	-qVars "age_c,age_c2" \
@@ -42,6 +42,18 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	-gltLabel 9 'age2.self-other.social-academic' -gltCode  9 'target : 1*self -1*other domain : 1*social -1*academic age_c2 : ' \
 	-dataTable \
 	Subj	target	domain	age_c	age_c2	InputFile \
+	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+	s003	other	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0003.nii \
+	s003	other	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0004.nii \
 	s005	self	academic	-3.091915563	9.55994184872161	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s005_t1_con_0001.nii \
 	s005	self	social	-3.091915563	9.55994184872161	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s005_t1_con_0002.nii \
 	s005	other	academic	-3.091915563	9.55994184872161	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s005_t1_con_0003.nii \
@@ -54,6 +66,46 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s005	self	social	3.66027397	13.3976055354596	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s005_t3_con_0002.nii \
 	s005	other	academic	3.66027397	13.3976055354596	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s005_t3_con_0003.nii \
 	s005	other	social	3.66027397	13.3976055354596	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s005_t3_con_0004.nii \
+	s006	self	academic	-2.59836066	6.75147811943564	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s006_t1_con_0001.nii \
+	s006	self	social	-2.59836066	6.75147811943564	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s006_t1_con_0002.nii \
+	s006	other	academic	-2.59836066	6.75147811943564	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s006_t1_con_0003.nii \
+	s006	other	social	-2.59836066	6.75147811943564	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s006_t1_con_0004.nii \
+	s007	self	academic	-2.67486339	7.1548941551623	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t1_con_0001.nii \
+	s007	self	social	-2.67486339	7.1548941551623	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t1_con_0002.nii \
+	s007	other	academic	-2.67486339	7.1548941551623	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t1_con_0003.nii \
+	s007	other	social	-2.67486339	7.1548941551623	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t1_con_0004.nii \
+	s007	self	academic	0.326027399999999	0.106293865550759	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t2_con_0001.nii \
+	s007	self	social	0.326027399999999	0.106293865550759	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t2_con_0002.nii \
+	s007	other	academic	0.326027399999999	0.106293865550759	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t2_con_0003.nii \
+	s007	other	social	0.326027399999999	0.106293865550759	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s007_t2_con_0004.nii \
+	s008	self	academic	0.56164384	0.315443803009946	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s008_t2_con_0001.nii \
+	s008	self	social	0.56164384	0.315443803009946	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s008_t2_con_0002.nii \
+	s008	other	academic	0.56164384	0.315443803009946	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s008_t2_con_0003.nii \
+	s008	other	social	0.56164384	0.315443803009946	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s008_t2_con_0004.nii \
+	s009	self	academic	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t1_con_0001.nii \
+	s009	self	social	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t1_con_0002.nii \
+	s009	other	academic	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t1_con_0003.nii \
+	s009	other	social	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t1_con_0004.nii \
+	s009	self	academic	-0.33972603	0.115413775459561	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t2_con_0001.nii \
+	s009	self	social	-0.33972603	0.115413775459561	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t2_con_0002.nii \
+	s009	other	academic	-0.33972603	0.115413775459561	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t2_con_0003.nii \
+	s009	other	social	-0.33972603	0.115413775459561	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s009_t2_con_0004.nii \
+	s010	self	academic	-2.64480874	6.99501327118039	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s010_t1_con_0001.nii \
+	s010	self	social	-2.64480874	6.99501327118039	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s010_t1_con_0002.nii \
+	s010	other	academic	-2.64480874	6.99501327118039	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s010_t1_con_0003.nii \
+	s010	other	social	-2.64480874	6.99501327118039	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s010_t1_con_0004.nii \
+	s011	self	academic	-0.0794520500000004	0.00631262824920257	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s011_t2_con_0001.nii \
+	s011	self	social	-0.0794520500000004	0.00631262824920257	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s011_t2_con_0002.nii \
+	s011	other	academic	-0.0794520500000004	0.00631262824920257	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s011_t2_con_0003.nii \
+	s011	other	social	-0.0794520500000004	0.00631262824920257	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s011_t2_con_0004.nii \
+	s014	self	academic	-3.086675649	9.52756656212957	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s014_t1_con_0001.nii \
+	s014	self	social	-3.086675649	9.52756656212957	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s014_t1_con_0002.nii \
+	s014	other	academic	-3.086675649	9.52756656212957	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s014_t1_con_0003.nii \
+	s014	other	social	-3.086675649	9.52756656212957	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s014_t1_con_0004.nii \
+	s015	self	academic	-3.240250019	10.4992201856295	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s015_t1_con_0001.nii \
+	s015	self	social	-3.240250019	10.4992201856295	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s015_t1_con_0002.nii \
+	s015	other	academic	-3.240250019	10.4992201856295	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s015_t1_con_0003.nii \
+	s015	other	social	-3.240250019	10.4992201856295	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s015_t1_con_0004.nii \
 	s016	self	academic	-2.50819672	6.29105078621876	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s016_t1_con_0001.nii \
 	s016	self	social	-2.50819672	6.29105078621876	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s016_t1_con_0002.nii \
 	s016	other	academic	-2.50819672	6.29105078621876	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s016_t1_con_0003.nii \
@@ -66,6 +118,10 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s016	self	social	3.66027397	13.3976055354596	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s016_t3_con_0002.nii \
 	s016	other	academic	3.66027397	13.3976055354596	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s016_t3_con_0003.nii \
 	s016	other	social	3.66027397	13.3976055354596	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s016_t3_con_0004.nii \
+	s017	self	academic	0.342465750000001	0.117282789923063	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s017_t2_con_0001.nii \
+	s017	self	social	0.342465750000001	0.117282789923063	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s017_t2_con_0002.nii \
+	s017	other	academic	0.342465750000001	0.117282789923063	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s017_t2_con_0003.nii \
+	s017	other	social	0.342465750000001	0.117282789923063	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s017_t2_con_0004.nii \
 	s018	self	academic	-3.187858373	10.1624410063062	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s018_t1_con_0001.nii \
 	s018	self	social	-3.187858373	10.1624410063062	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s018_t1_con_0002.nii \
 	s018	other	academic	-3.187858373	10.1624410063062	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s018_t1_con_0003.nii \
@@ -90,6 +146,14 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s019	self	social	3.53150685	12.4715406315969	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s019_t3_con_0002.nii \
 	s019	other	academic	3.53150685	12.4715406315969	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s019_t3_con_0003.nii \
 	s019	other	social	3.53150685	12.4715406315969	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s019_t3_con_0004.nii \
+	s020	self	academic	-2.99180328	8.95088686621875	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t1_con_0001.nii \
+	s020	self	social	-2.99180328	8.95088686621875	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t1_con_0002.nii \
+	s020	other	academic	-2.99180328	8.95088686621875	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t1_con_0003.nii \
+	s020	other	social	-2.99180328	8.95088686621875	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t1_con_0004.nii \
+	s020	self	academic	0.0684931500000001	0.00469131159692252	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t2_con_0001.nii \
+	s020	self	social	0.0684931500000001	0.00469131159692252	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t2_con_0002.nii \
+	s020	other	academic	0.0684931500000001	0.00469131159692252	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t2_con_0003.nii \
+	s020	other	social	0.0684931500000001	0.00469131159692252	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s020_t2_con_0004.nii \
 	s022	self	academic	-3.215607456	10.3401313110828	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s022_t1_con_0001.nii \
 	s022	self	social	-3.215607456	10.3401313110828	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s022_t1_con_0002.nii \
 	s022	other	academic	-3.215607456	10.3401313110828	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s022_t1_con_0003.nii \
@@ -126,6 +190,18 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s024	self	social	3.43561644	11.8034603227983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s024_t3_con_0002.nii \
 	s024	other	academic	3.43561644	11.8034603227983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s024_t3_con_0003.nii \
 	s024	other	social	3.43561644	11.8034603227983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s024_t3_con_0004.nii \
+	s025	self	academic	-3.094969683	9.57883733868912	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s025_t1_con_0001.nii \
+	s025	self	social	-3.094969683	9.57883733868912	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s025_t1_con_0002.nii \
+	s025	other	academic	-3.094969683	9.57883733868912	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s025_t1_con_0003.nii \
+	s025	other	social	-3.094969683	9.57883733868912	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s025_t1_con_0004.nii \
+	s027	self	academic	-2.3852459	5.68939800346681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s027_t1_con_0001.nii \
+	s027	self	social	-2.3852459	5.68939800346681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s027_t1_con_0002.nii \
+	s027	other	academic	-2.3852459	5.68939800346681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s027_t1_con_0003.nii \
+	s027	other	social	-2.3852459	5.68939800346681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s027_t1_con_0004.nii \
+	s028	self	academic	-3.043476308	9.26274803735732	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s028_t1_con_0001.nii \
+	s028	self	social	-3.043476308	9.26274803735732	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s028_t1_con_0002.nii \
+	s028	other	academic	-3.043476308	9.26274803735732	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s028_t1_con_0003.nii \
+	s028	other	social	-3.043476308	9.26274803735732	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s028_t1_con_0004.nii \
 	s029	self	academic	-2.93989071	8.64295738674431	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s029_t1_con_0001.nii \
 	s029	self	social	-2.93989071	8.64295738674431	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s029_t1_con_0002.nii \
 	s029	other	academic	-2.93989071	8.64295738674431	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s029_t1_con_0003.nii \
@@ -150,6 +226,10 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s030	self	social	3.24109589	10.5047025681749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s030_t3_con_0002.nii \
 	s030	other	academic	3.24109589	10.5047025681749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s030_t3_con_0003.nii \
 	s030	other	social	3.24109589	10.5047025681749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s030_t3_con_0004.nii \
+	s031	self	academic	-3.04337151	9.26211014787968	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s031_t1_con_0001.nii \
+	s031	self	social	-3.04337151	9.26211014787968	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s031_t1_con_0002.nii \
+	s031	other	academic	-3.04337151	9.26211014787968	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s031_t1_con_0003.nii \
+	s031	other	social	-3.04337151	9.26211014787968	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s031_t1_con_0004.nii \
 	s032	self	academic	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s032_t1_con_0001.nii \
 	s032	self	social	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s032_t1_con_0002.nii \
 	s032	other	academic	-3.459016393	11.9647944070427	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s032_t1_con_0003.nii \
@@ -162,6 +242,18 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s032	self	social	1.89863014	3.60479640851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s032_t3_con_0002.nii \
 	s032	other	academic	1.89863014	3.60479640851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s032_t3_con_0003.nii \
 	s032	other	social	1.89863014	3.60479640851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s032_t3_con_0004.nii \
+	s033	self	academic	-3.448087432	11.8893069387164	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t1_con_0001.nii \
+	s033	self	social	-3.448087432	11.8893069387164	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t1_con_0002.nii \
+	s033	other	academic	-3.448087432	11.8893069387164	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t1_con_0003.nii \
+	s033	other	social	-3.448087432	11.8893069387164	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t1_con_0004.nii \
+	s033	self	academic	3.21643836	10.3454757236795	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t3_con_0001.nii \
+	s033	self	social	3.21643836	10.3454757236795	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t3_con_0002.nii \
+	s033	other	academic	3.21643836	10.3454757236795	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t3_con_0003.nii \
+	s033	other	social	3.21643836	10.3454757236795	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s033_t3_con_0004.nii \
+	s034	self	academic	0.45355191	0.205709335064648	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s034_t2_con_0001.nii \
+	s034	self	social	0.45355191	0.205709335064648	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s034_t2_con_0002.nii \
+	s034	other	academic	0.45355191	0.205709335064648	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s034_t2_con_0003.nii \
+	s034	other	social	0.45355191	0.205709335064648	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s034_t2_con_0004.nii \
 	s035	self	academic	-3.210382514	10.306555886197	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s035_t1_con_0001.nii \
 	s035	self	social	-3.210382514	10.306555886197	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s035_t1_con_0002.nii \
 	s035	other	academic	-3.210382514	10.306555886197	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s035_t1_con_0003.nii \
@@ -174,6 +266,14 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s035	self	social	2.79452055	7.8093451043723	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s035_t3_con_0002.nii \
 	s035	other	academic	2.79452055	7.8093451043723	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s035_t3_con_0003.nii \
 	s035	other	social	2.79452055	7.8093451043723	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s035_t3_con_0004.nii \
+	s036	self	academic	-2.60655738	6.79414137523246	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s036_t1_con_0001.nii \
+	s036	self	social	-2.60655738	6.79414137523246	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s036_t1_con_0002.nii \
+	s036	other	academic	-2.60655738	6.79414137523246	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s036_t1_con_0003.nii \
+	s036	other	social	-2.60655738	6.79414137523246	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s036_t1_con_0004.nii \
+	s037	self	academic	-3.139344262	9.85548239535232	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s037_t1_con_0001.nii \
+	s037	self	social	-3.139344262	9.85548239535232	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s037_t1_con_0002.nii \
+	s037	other	academic	-3.139344262	9.85548239535232	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s037_t1_con_0003.nii \
+	s037	other	social	-3.139344262	9.85548239535232	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s037_t1_con_0004.nii \
 	s038	self	academic	-2.44535519	5.97976200525994	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s038_t1_con_0001.nii \
 	s038	self	social	-2.44535519	5.97976200525994	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s038_t1_con_0002.nii \
 	s038	other	academic	-2.44535519	5.97976200525994	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s038_t1_con_0003.nii \
@@ -186,6 +286,10 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s038	self	social	4.24931507	18.0566785641291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s038_t3_con_0002.nii \
 	s038	other	academic	4.24931507	18.0566785641291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s038_t3_con_0003.nii \
 	s038	other	social	4.24931507	18.0566785641291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s038_t3_con_0004.nii \
+	s039	self	academic	-2.50546448	6.27735226054167	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s039_t1_con_0001.nii \
+	s039	self	social	-2.50546448	6.27735226054167	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s039_t1_con_0002.nii \
+	s039	other	academic	-2.50546448	6.27735226054167	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s039_t1_con_0003.nii \
+	s039	other	social	-2.50546448	6.27735226054167	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s039_t1_con_0004.nii \
 	s040	self	academic	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s040_t1_con_0001.nii \
 	s040	self	social	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s040_t1_con_0002.nii \
 	s040	other	academic	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s040_t1_con_0003.nii \
@@ -198,6 +302,14 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s040	self	social	2.79726027	7.82466501812048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s040_t3_con_0002.nii \
 	s040	other	academic	2.79726027	7.82466501812048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s040_t3_con_0003.nii \
 	s040	other	social	2.79726027	7.82466501812048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s040_t3_con_0004.nii \
+	s041	self	academic	0.43989071	0.193503836744304	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t2_con_0001.nii \
+	s041	self	social	0.43989071	0.193503836744304	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t2_con_0002.nii \
+	s041	other	academic	0.43989071	0.193503836744304	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t2_con_0003.nii \
+	s041	other	social	0.43989071	0.193503836744304	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t2_con_0004.nii \
+	s041	self	academic	3.68767123	13.5989191005697	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t3_con_0001.nii \
+	s041	self	social	3.68767123	13.5989191005697	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t3_con_0002.nii \
+	s041	other	academic	3.68767123	13.5989191005697	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t3_con_0003.nii \
+	s041	other	social	3.68767123	13.5989191005697	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s041_t3_con_0004.nii \
 	s042	self	academic	-2.72876712	7.4461699951931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s042_t1_con_0001.nii \
 	s042	self	social	-2.72876712	7.4461699951931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s042_t1_con_0002.nii \
 	s042	other	academic	-2.72876712	7.4461699951931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s042_t1_con_0003.nii \
@@ -222,6 +334,42 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s045	self	social	3.04383562	9.26493528158078	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s045_t3_con_0002.nii \
 	s045	other	academic	3.04383562	9.26493528158078	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s045_t3_con_0003.nii \
 	s045	other	social	3.04383562	9.26493528158078	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s045_t3_con_0004.nii \
+	s046	self	academic	-3.049315068	9.29832238393185	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t1_con_0001.nii \
+	s046	self	social	-3.049315068	9.29832238393185	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t1_con_0002.nii \
+	s046	other	academic	-3.049315068	9.29832238393185	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t1_con_0003.nii \
+	s046	other	social	-3.049315068	9.29832238393185	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t1_con_0004.nii \
+	s046	self	academic	3.13424658	9.82350162424169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t3_con_0001.nii \
+	s046	self	social	3.13424658	9.82350162424169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t3_con_0002.nii \
+	s046	other	academic	3.13424658	9.82350162424169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t3_con_0003.nii \
+	s046	other	social	3.13424658	9.82350162424169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s046_t3_con_0004.nii \
+	s049	self	academic	-2.89863014	8.40205668851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s049_t1_con_0001.nii \
+	s049	self	social	-2.89863014	8.40205668851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s049_t1_con_0002.nii \
+	s049	other	academic	-2.89863014	8.40205668851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s049_t1_con_0003.nii \
+	s049	other	social	-2.89863014	8.40205668851642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s049_t1_con_0004.nii \
+	s051	self	academic	-0.24931507	0.0621580041291048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s051_t2_con_0001.nii \
+	s051	self	social	-0.24931507	0.0621580041291048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s051_t2_con_0002.nii \
+	s051	other	academic	-0.24931507	0.0621580041291048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s051_t2_con_0003.nii \
+	s051	other	social	-0.24931507	0.0621580041291048	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s051_t2_con_0004.nii \
+	s054	self	academic	0.24590164	0.0604676165546894	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s054_t2_con_0001.nii \
+	s054	self	social	0.24590164	0.0604676165546894	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s054_t2_con_0002.nii \
+	s054	other	academic	0.24590164	0.0604676165546894	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s054_t2_con_0003.nii \
+	s054	other	social	0.24590164	0.0604676165546894	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s054_t2_con_0004.nii \
+	s055	self	academic	0.385245899999999	0.148414403466809	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t2_con_0001.nii \
+	s055	self	social	0.385245899999999	0.148414403466809	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t2_con_0002.nii \
+	s055	other	academic	0.385245899999999	0.148414403466809	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t2_con_0003.nii \
+	s055	other	social	0.385245899999999	0.148414403466809	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t2_con_0004.nii \
+	s055	self	academic	3.76916685	14.2066187431389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t3_con_0001.nii \
+	s055	self	social	3.76916685	14.2066187431389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t3_con_0002.nii \
+	s055	other	academic	3.76916685	14.2066187431389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t3_con_0003.nii \
+	s055	other	social	3.76916685	14.2066187431389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s055_t3_con_0004.nii \
+	s056	self	academic	-2.95616438	8.73890784158079	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s056_t1_con_0001.nii \
+	s056	self	social	-2.95616438	8.73890784158079	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s056_t1_con_0002.nii \
+	s056	other	academic	-2.95616438	8.73890784158079	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s056_t1_con_0003.nii \
+	s056	other	social	-2.95616438	8.73890784158079	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s056_t1_con_0004.nii \
+	s057	self	academic	3.8924695	15.1513188084303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s057_t3_con_0001.nii \
+	s057	self	social	3.8924695	15.1513188084303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s057_t3_con_0002.nii \
+	s057	other	academic	3.8924695	15.1513188084303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s057_t3_con_0003.nii \
+	s057	other	social	3.8924695	15.1513188084303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s057_t3_con_0004.nii \
 	s058	self	academic	-2.50410959	6.27056483872997	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s058_t1_con_0001.nii \
 	s058	self	social	-2.50410959	6.27056483872997	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s058_t1_con_0002.nii \
 	s058	other	academic	-2.50410959	6.27056483872997	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s058_t1_con_0003.nii \
@@ -234,6 +382,26 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s058	self	social	4.15068493	17.2281853881291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s058_t3_con_0002.nii \
 	s058	other	academic	4.15068493	17.2281853881291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s058_t3_con_0003.nii \
 	s058	other	social	4.15068493	17.2281853881291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s058_t3_con_0004.nii \
+	s059	self	academic	0.37431694	0.140113171570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t2_con_0001.nii \
+	s059	self	social	0.37431694	0.140113171570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t2_con_0002.nii \
+	s059	other	academic	0.37431694	0.140113171570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t2_con_0003.nii \
+	s059	other	social	0.37431694	0.140113171570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t2_con_0004.nii \
+	s059	self	academic	3.36438356	11.3190767387983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t3_con_0001.nii \
+	s059	self	social	3.36438356	11.3190767387983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t3_con_0002.nii \
+	s059	other	academic	3.36438356	11.3190767387983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t3_con_0003.nii \
+	s059	other	social	3.36438356	11.3190767387983	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s059_t3_con_0004.nii \
+	s060	self	academic	-3.191780822	10.187464815687	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t1_con_0001.nii \
+	s060	self	social	-3.191780822	10.187464815687	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t1_con_0002.nii \
+	s060	other	academic	-3.191780822	10.187464815687	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t1_con_0003.nii \
+	s060	other	social	-3.191780822	10.187464815687	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t1_con_0004.nii \
+	s060	self	academic	-0.0480350299999994	0.00230736410710084	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t2_con_0001.nii \
+	s060	self	social	-0.0480350299999994	0.00230736410710084	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t2_con_0002.nii \
+	s060	other	academic	-0.0480350299999994	0.00230736410710084	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t2_con_0003.nii \
+	s060	other	social	-0.0480350299999994	0.00230736410710084	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s060_t2_con_0004.nii \
+	s062	self	academic	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s062_t1_con_0001.nii \
+	s062	self	social	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s062_t1_con_0002.nii \
+	s062	other	academic	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s062_t1_con_0003.nii \
+	s062	other	social	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s062_t1_con_0004.nii \
 	s064	self	academic	-3.189041096	10.1699831119769	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s064_t1_con_0001.nii \
 	s064	self	social	-3.189041096	10.1699831119769	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s064_t1_con_0002.nii \
 	s064	other	academic	-3.189041096	10.1699831119769	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s064_t1_con_0003.nii \
@@ -258,6 +426,26 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s065	self	social	3.32876712	11.0806905391931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s065_t3_con_0002.nii \
 	s065	other	academic	3.32876712	11.0806905391931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s065_t3_con_0003.nii \
 	s065	other	social	3.32876712	11.0806905391931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s065_t3_con_0004.nii \
+	s067	self	academic	-3.057534247	9.34851567157785	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s067_t1_con_0001.nii \
+	s067	self	social	-3.057534247	9.34851567157785	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s067_t1_con_0002.nii \
+	s067	other	academic	-3.057534247	9.34851567157785	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s067_t1_con_0003.nii \
+	s067	other	social	-3.057534247	9.34851567157785	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s067_t1_con_0004.nii \
+	s068	self	academic	-3.22739726	10.4160930738555	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s068_t1_con_0001.nii \
+	s068	self	social	-3.22739726	10.4160930738555	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s068_t1_con_0002.nii \
+	s068	other	academic	-3.22739726	10.4160930738555	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s068_t1_con_0003.nii \
+	s068	other	social	-3.22739726	10.4160930738555	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s068_t1_con_0004.nii \
+	s070	self	academic	3.27945205	10.7548057482492	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s070_t3_con_0001.nii \
+	s070	self	social	3.27945205	10.7548057482492	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s070_t3_con_0002.nii \
+	s070	other	academic	3.27945205	10.7548057482492	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s070_t3_con_0003.nii \
+	s070	other	social	3.27945205	10.7548057482492	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s070_t3_con_0004.nii \
+	s071	self	academic	-2.46027397	6.05294800745956	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t1_con_0001.nii \
+	s071	self	social	-2.46027397	6.05294800745956	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t1_con_0002.nii \
+	s071	other	academic	-2.46027397	6.05294800745956	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t1_con_0003.nii \
+	s071	other	social	-2.46027397	6.05294800745956	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t1_con_0004.nii \
+	s071	self	academic	0.89071038	0.793364981039744	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t2_con_0001.nii \
+	s071	self	social	0.89071038	0.793364981039744	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t2_con_0002.nii \
+	s071	other	academic	0.89071038	0.793364981039744	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t2_con_0003.nii \
+	s071	other	social	0.89071038	0.793364981039744	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s071_t2_con_0004.nii \
 	s072	self	academic	-2.53424658	6.42240572824169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s072_t1_con_0001.nii \
 	s072	self	social	-2.53424658	6.42240572824169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s072_t1_con_0002.nii \
 	s072	other	academic	-2.53424658	6.42240572824169	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s072_t1_con_0003.nii \
@@ -282,6 +470,38 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s073	self	social	3.05479452	9.33176955942204	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s073_t3_con_0002.nii \
 	s073	other	academic	3.05479452	9.33176955942204	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s073_t3_con_0003.nii \
 	s073	other	social	3.05479452	9.33176955942204	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s073_t3_con_0004.nii \
+	s074	self	academic	3.35890411	11.2822368201749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s074_t3_con_0001.nii \
+	s074	self	social	3.35890411	11.2822368201749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s074_t3_con_0002.nii \
+	s074	other	academic	3.35890411	11.2822368201749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s074_t3_con_0003.nii \
+	s074	other	social	3.35890411	11.2822368201749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s074_t3_con_0004.nii \
+	s075	self	academic	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s075_t1_con_0001.nii \
+	s075	self	social	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s075_t1_con_0002.nii \
+	s075	other	academic	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s075_t1_con_0003.nii \
+	s075	other	social	-2.49863014	6.24315257651642	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s075_t1_con_0004.nii \
+	s077	self	academic	-2.53150685	6.40852693159692	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s077_t1_con_0001.nii \
+	s077	self	social	-2.53150685	6.40852693159692	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s077_t1_con_0002.nii \
+	s077	other	academic	-2.53150685	6.40852693159692	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s077_t1_con_0003.nii \
+	s077	other	social	-2.53150685	6.40852693159692	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s077_t1_con_0004.nii \
+	s078	self	academic	0.180327869999999	0.0325181406987366	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t2_con_0001.nii \
+	s078	self	social	0.180327869999999	0.0325181406987366	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t2_con_0002.nii \
+	s078	other	academic	0.180327869999999	0.0325181406987366	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t2_con_0003.nii \
+	s078	other	social	0.180327869999999	0.0325181406987366	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t2_con_0004.nii \
+	s078	self	academic	3.96364997	15.710521084681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t3_con_0001.nii \
+	s078	self	social	3.96364997	15.710521084681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t3_con_0002.nii \
+	s078	other	academic	3.96364997	15.710521084681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t3_con_0003.nii \
+	s078	other	social	3.96364997	15.710521084681	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s078_t3_con_0004.nii \
+	s079	self	academic	-2.72328767	7.41629573357403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s079_t1_con_0001.nii \
+	s079	self	social	-2.72328767	7.41629573357403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s079_t1_con_0002.nii \
+	s079	other	academic	-2.72328767	7.41629573357403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s079_t1_con_0003.nii \
+	s079	other	social	-2.72328767	7.41629573357403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s079_t1_con_0004.nii \
+	s080	self	academic	0.221311480000001	0.0489787711797907	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t2_con_0001.nii \
+	s080	self	social	0.221311480000001	0.0489787711797907	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t2_con_0002.nii \
+	s080	other	academic	0.221311480000001	0.0489787711797907	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t2_con_0003.nii \
+	s080	other	social	0.221311480000001	0.0489787711797907	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t2_con_0004.nii \
+	s080	self	academic	3.27123288	10.7009645551931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t3_con_0001.nii \
+	s080	self	social	3.27123288	10.7009645551931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t3_con_0002.nii \
+	s080	other	academic	3.27123288	10.7009645551931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t3_con_0003.nii \
+	s080	other	social	3.27123288	10.7009645551931	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s080_t3_con_0004.nii \
 	s081	self	academic	-2.75890411	7.61155188817489	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s081_t1_con_0001.nii \
 	s081	self	social	-2.75890411	7.61155188817489	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s081_t1_con_0002.nii \
 	s081	other	academic	-2.75890411	7.61155188817489	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s081_t1_con_0003.nii \
@@ -294,6 +514,34 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s081	self	social	2.7260274	7.43122538555076	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s081_t3_con_0002.nii \
 	s081	other	academic	2.7260274	7.43122538555076	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s081_t3_con_0003.nii \
 	s081	other	social	2.7260274	7.43122538555076	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s081_t3_con_0004.nii \
+	s082	self	academic	-3.126027397	9.77204728679459	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t1_con_0001.nii \
+	s082	self	social	-3.126027397	9.77204728679459	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t1_con_0002.nii \
+	s082	other	academic	-3.126027397	9.77204728679459	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t1_con_0003.nii \
+	s082	other	social	-3.126027397	9.77204728679459	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t1_con_0004.nii \
+	s082	self	academic	-0.199318809999999	0.0397279880198159	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t2_con_0001.nii \
+	s082	self	social	-0.199318809999999	0.0397279880198159	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t2_con_0002.nii \
+	s082	other	academic	-0.199318809999999	0.0397279880198159	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t2_con_0003.nii \
+	s082	other	social	-0.199318809999999	0.0397279880198159	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s082_t2_con_0004.nii \
+	s084	self	academic	0.00821917999999933	6.75549198723889e-05	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t2_con_0001.nii \
+	s084	self	social	0.00821917999999933	6.75549198723889e-05	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t2_con_0002.nii \
+	s084	other	academic	0.00821917999999933	6.75549198723889e-05	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t2_con_0003.nii \
+	s084	other	social	0.00821917999999933	6.75549198723889e-05	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t2_con_0004.nii \
+	s084	self	academic	3.2568306	10.6069455570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t3_con_0001.nii \
+	s084	self	social	3.2568306	10.6069455570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t3_con_0002.nii \
+	s084	other	academic	3.2568306	10.6069455570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t3_con_0003.nii \
+	s084	other	social	3.2568306	10.6069455570964	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s084_t3_con_0004.nii \
+	s085	self	academic	-2.87671233	8.27547382957403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s085_t1_con_0001.nii \
+	s085	self	social	-2.87671233	8.27547382957403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s085_t1_con_0002.nii \
+	s085	other	academic	-2.87671233	8.27547382957403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s085_t1_con_0003.nii \
+	s085	other	social	-2.87671233	8.27547382957403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s085_t1_con_0004.nii \
+	s086	self	academic	-2.55068493	6.5059936121291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t1_con_0001.nii \
+	s086	self	social	-2.55068493	6.5059936121291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t1_con_0002.nii \
+	s086	other	academic	-2.55068493	6.5059936121291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t1_con_0003.nii \
+	s086	other	social	-2.55068493	6.5059936121291	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t1_con_0004.nii \
+	s086	self	academic	0.17213115	0.0296291328003226	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t2_con_0001.nii \
+	s086	self	social	0.17213115	0.0296291328003226	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t2_con_0002.nii \
+	s086	other	academic	0.17213115	0.0296291328003226	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t2_con_0003.nii \
+	s086	other	social	0.17213115	0.0296291328003226	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s086_t2_con_0004.nii \
 	s089	self	academic	-2.80547945	7.8707149443723	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s089_t1_con_0001.nii \
 	s089	self	social	-2.80547945	7.8707149443723	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s089_t1_con_0002.nii \
 	s089	other	academic	-2.80547945	7.8707149443723	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s089_t1_con_0003.nii \
@@ -306,3 +554,31 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	s089	self	social	3.54718168	12.5824978709276	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s089_t3_con_0002.nii \
 	s089	other	academic	3.54718168	12.5824978709276	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s089_t3_con_0003.nii \
 	s089	other	social	3.54718168	12.5824978709276	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s089_t3_con_0004.nii \
+	s090	self	academic	-3.117808219	9.72072809046396	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s090_t1_con_0001.nii \
+	s090	self	social	-3.117808219	9.72072809046396	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s090_t1_con_0002.nii \
+	s090	other	academic	-3.117808219	9.72072809046396	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s090_t1_con_0003.nii \
+	s090	other	social	-3.117808219	9.72072809046396	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s090_t1_con_0004.nii \
+	s092	self	academic	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t1_con_0001.nii \
+	s092	self	social	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t1_con_0002.nii \
+	s092	other	academic	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t1_con_0003.nii \
+	s092	other	social	-3.167123288	10.0306699213919	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t1_con_0004.nii \
+	s092	self	academic	-0.275956280000001	0.0761518684714389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t2_con_0001.nii \
+	s092	self	social	-0.275956280000001	0.0761518684714389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t2_con_0002.nii \
+	s092	other	academic	-0.275956280000001	0.0761518684714389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t2_con_0003.nii \
+	s092	other	social	-0.275956280000001	0.0761518684714389	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s092_t2_con_0004.nii \
+	s093	self	academic	-3.270476832	10.6960187086488	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s093_t1_con_0001.nii \
+	s093	self	social	-3.270476832	10.6960187086488	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s093_t1_con_0002.nii \
+	s093	other	academic	-3.270476832	10.6960187086488	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s093_t1_con_0003.nii \
+	s093	other	social	-3.270476832	10.6960187086488	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s093_t1_con_0004.nii \
+	s094	self	academic	2.95890411	8.7551135321749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s094_t3_con_0001.nii \
+	s094	self	social	2.95890411	8.7551135321749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s094_t3_con_0002.nii \
+	s094	other	academic	2.95890411	8.7551135321749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s094_t3_con_0003.nii \
+	s094	other	social	2.95890411	8.7551135321749	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s094_t3_con_0004.nii \
+	s095	self	academic	-3.254045962	10.5888151228085	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s095_t1_con_0001.nii \
+	s095	self	social	-3.254045962	10.5888151228085	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s095_t1_con_0002.nii \
+	s095	other	academic	-3.254045962	10.5888151228085	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s095_t1_con_0003.nii \
+	s095	other	social	-3.254045962	10.5888151228085	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s095_t1_con_0004.nii \
+	s096	self	academic	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0001.nii \
+	s096	self	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0002.nii \
+	s096	other	academic	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0003.nii \
+	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \

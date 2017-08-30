@@ -1,0 +1,25 @@
+Loading required package: nlme
+Loading required package: phia
+Loading required package: car
+Loading required package: snow
+++ Smallest FDR q [0 (Intercept)  F] = 1.41639e-14
+[7m*+ WARNING:[0m Smallest FDR q [1 target  F] = 0.685327 ==> few true single voxel detections
+++ Smallest FDR q [2 domain  F] = 2.67681e-06
+++ Smallest FDR q [3 age_c  F] = 3.0158e-11
+++ Smallest FDR q [4 age_c2  F] = 7.89218e-05
+[7m*+ WARNING:[0m Smallest FDR q [5 target:domain  F] = 0.617188 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [6 target:age_c  F] = 0.987435 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [7 domain:age_c  F] = 0.982634 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [8 target:age_c2  F] = 0.984182 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [9 domain:age_c2  F] = 0.926515 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [10 target:domain:age_c  F] = 0.987015 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [11 target:domain:age_c2  F] = 0.982387 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [13 self-other Z] = 0.245617 ==> few true single voxel detections
+++ Smallest FDR q [15 social-academic Z] = 1.281e-11
+[7m*+ WARNING:[0m Smallest FDR q [17 self-other.social-academic Z] = 0.970812 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [19 social_self-other Z] = 0.468637 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [21 academic_self-other Z] = 0.999777 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [23 age.self-other Z] = 0.999861 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [25 age2.self-other Z] = 0.999692 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [27 age.self-other.social-academic Z] = 0.999856 ==> few true single voxel detections
+[7m*+ WARNING:[0m Smallest FDR q [29 age2.self-other.social-academic Z] = 0.999041 ==> few true single voxel detections
