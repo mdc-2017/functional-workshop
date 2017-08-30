@@ -1,7 +1,9 @@
-%Get all the files we want (and more)
-%Scans=subdir(fullfile('/Volumes/psych-cog/dsnlab/SFIC_Self3/analysis/rx/LME_FX/','con_000*.nii'));
+% This script runs 2x2x3 within subject repeated measures ANOVA using GLMFlex
+% However, we do not advise that you use this tool as the results are likely invalid
+% https://groups.google.com/forum/#!searchin/fmri_matlab_tools/linear$20contrast/fmri_matlab_tools/iB5f4fhIw70/fb7XVtZi6QQJ
+
 %% Define variables 
-basedir='/Volumes/psych-cog/dsnlab/SFIC_Self3/subjects/';
+basedir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data';
 subjectIDs={
 's005'
 's016'
@@ -31,7 +33,7 @@ waves={
 't2'
 't3'};
 
-fxdir='fx/fx_2017';
+fxdir='FX_models';
 
 cons={
 'con_0001.nii'
@@ -64,28 +66,13 @@ clear I;
 I.Scans = dat.fn;
 I.Model = 'Run*SelfOther*SocialAcademic + random(SS|Run*SelfOther*SocialAcademic)';
 I.Data = dat;
-I.OutputDir = '/Volumes/psych-cog/dsnlab/SFIC_Self3/rx/MDC/MDC_glm_flex';
+I.OutputDir = '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/GLMFlex';
 I.RemoveOutliers = 0;
 I.DoOnlyAll = 1;
 I.estSmooth = 1;
-I.Mask = '/Volumes/psych-cog/dsnlab/SFIC_Self3/masks/groupAverage_opt.nii';
+I.Mask = '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii';
 I.PostHocs = {'SelfOther$Self | Run$t1 # SelfOther$Self | Run$t2' 't1t2Self';
-    'SelfOther$Self | Run$t2 # SelfOther$Self | Run$t3' 't2t3Self'};
+              'SelfOther$Self | Run$t2 # SelfOther$Self | Run$t3' 't2t3Self';
+              'SelfOther$Self | Run$t1 # SelfOther$Self | Run$t3' 't1t3Self'};
 
 GLM_Flex_Fast2(I);
-
-
-%%
-% Use corrections for covariance
-
-anotherI=I;
-anotherI.OutputDir='/Volumes/psych-cog/dsnlab/SFIC_Self3/rx/glm_flex_covcorrect';
-anotherI.covCorrect=1;
-anotherI.PostHocs=[];
-GLM_Flex_Fast4(anotherI);
-
-IforICC=I;
-IforICC.Model = 'Run + random(SS|Run)';
-IforICC.PostHocs=[];
-IforICC.OutputDir='/Volumes/psych-cog/dsnlab/SFIC_Self3/rx/glm_flex_ICC';
-GLM_Flex_Fast2(IforICC);
