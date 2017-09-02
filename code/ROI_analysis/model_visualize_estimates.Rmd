@@ -1,0 +1,129 @@
+---
+title: "model_visualize_estimates"
+author: "Dani Cosme"
+date: "9/1/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=3, warning=FALSE, message=FALSE)
+```
+
+# load packages
+```{r}
+library(tidyverse)
+library(lme4)
+library(lmerTest)
+library(wesanderson)
+```
+
+# load data
+```{r}
+data = read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
+age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
+  rename("subjectID" = Subj,
+         "wave" = wavenum)
+```
+
+# tidy data
+## Specify your variables names and levels
+```{r}
+# tidy raw data
+data1 = data %>% 
+  rename('subjectID' = V1,
+         'wave' = V2,
+         'con' = V3,
+         'parcellation' = V4,
+         'beta' = V5,
+         'sd' = V6) %>%
+  mutate(target = ifelse(con %in% c('con_0001', 'con_0002'), 'self', 'other'), 
+         domain = ifelse(con %in% c('con_0001', 'con_0003'), 'academic', 'social'), 
+         parcellation = as.factor(parcellation),
+         target = as.factor(target),
+         domain = as.factor(domain)) %>%
+  extract(wave, 'wave', 't([0-3]{1})') %>%
+  mutate(wave = as.integer(wave)) %>%
+  filter(parcellation == 380)
+```
+
+# add age to the dataframe
+```{r}
+merged = left_join(data1, age, by = c('subjectID', 'wave'))
+```
+
+# remove missing data
+```{r}
+data.complete = merged %>%
+  na.omit(.)
+```
+
+# run LME models and compare
+Predict parameter estimates from task conditions (target and domain) and age
+```{r}
+# random intercepts
+model.1 = lmer(beta ~ target*domain*age + (1 | subjectID), data=data.complete)
+summary(model.1)
+
+# random intercepts and slopes 
+model.2 = lmer(beta ~ target*domain*age + (1 + age | subjectID), data=data.complete)
+summary(model.2)
+
+# compare model
+anova(model.1, model.2)
+```
+
+# visualize raw data
+```{r}
+# set color palette
+palette = wes_palette("Zissou", 2, type = "continuous")
+
+# plot data
+ggplot(data.complete, aes(x = age, 
+                          y = beta, 
+                          group = interaction(subjectID, target, domain), 
+                          color = target, 
+                          linetype = domain)) +
+geom_point(size = .5, alpha = .1) + 
+geom_line(alpha = .05) + 
+#geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
+facet_wrap(~parcellation, ncol = 2) +
+geom_hline(yintercept = 0, color = 'gray')+
+scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+scale_x_continuous(breaks=c(10,13,16)) +
+coord_cartesian(ylim=c(-1,1)) +
+theme_minimal(base_size = 18)
+```
+
+# visualize model estimates
+```{r}
+# set color palette
+palette = wes_palette("Zissou", 2, type = "continuous")
+
+# extract random effects formula from model.2 and reconstruct it to use with the `predict` function
+REFormulaString = as.character(findbars(model.2@call$formula)[[1]])
+REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], REFormulaString[[3]], ')'))
+
+# get expected values for each observation based on model.2
+data.complete$expected <- predict(model.2, newdata = data.complete,
+                                    re.form=REFormula)
+
+# data.complete$expected_mean <- predict(model_to_plot, newdata = data.complete, re.form=NA)
+
+# plot data
+ggplot(data.complete, aes(x = age, 
+                          y = expected, 
+                          group = interaction(subjectID, target, domain), 
+                          color = target, 
+                          linetype = domain)) +
+geom_point(size = .5, alpha = .1) + 
+geom_line(alpha = .05) + 
+geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+#geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
+facet_wrap(~parcellation, ncol = 2) +
+geom_hline(yintercept = 0, color = 'gray')+
+scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+scale_x_continuous(breaks=c(10,13,16)) +
+coord_cartesian(ylim=c(-1,1)) +
+theme_minimal(base_size = 18)
+```
