@@ -4,12 +4,12 @@
 % cfg_basicio BasicIO - Unknown
 %-----------------------------------------------------------------------
 matlabbatch{1}.spm.stats.factorial_design.dir = {'/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/SPM/'};
-matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).name = 'SelfOther';
+matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).name = 'target';
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).dept = 1;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).variance = 0;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).gmsca = 0;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(1).ancova = 0;
-matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(2).name = 'AcademicSocial';
+matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(2).name = 'domain';
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(2).dept = 1;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(2).variance = 0;
 matlabbatch{1}.spm.stats.factorial_design.des.fblock.fac(2).gmsca = 0;

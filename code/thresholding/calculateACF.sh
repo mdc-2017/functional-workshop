@@ -5,13 +5,16 @@
 # using 3dFWHMx in AFNI and averages across all files by executing calculateACF.R
 # The average acf parameters will be saved as SPM_acf.txt in the code directory.
 
-# specify thresholding code directory
+# Specify variables
+# ------------------------------------------------------------------------------------------
+# thresholding code directory
 codeDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/thresholding
 
-# specify SPM RX directory (where the residual files are)
+# SPM RX directory (where the residual files are)
 rxDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/SPM
 
-# estimate acf parameters for per subject and save this output to a log file
+# Estimate acf parameters for per subject and save this output to a log file
+# ------------------------------------------------------------------------------------------
 cd "${rxDir}"
 
 for i in Res_*; do 
@@ -19,5 +22,6 @@ for i in Res_*; do
 	3dFWHMx -acf -mask mask.nii $i >> residuals.txt
 done
 
-# execute calculateACF.R
+# Execute calculateACF.R
+# ------------------------------------------------------------------------------------------
 Rscript "${codeDir}"/calculateACF.R "${rxDir}"/residuals.txt > "${codeDir}"/output/SPM_acf.txt
