@@ -101,15 +101,15 @@ ggplot(data.complete, aes(x = age,
                           group = interaction(subjectID, target, domain), 
                           color = target, 
                           linetype = domain)) +
-geom_point(size = .5, alpha = .1) + 
-geom_line(alpha = .05) + 
-geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
-facet_wrap(~parcellation, ncol = 2) +
-geom_hline(yintercept = 0, color = 'gray')+
-scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-scale_x_continuous(breaks=c(10,13,16)) +
-coord_cartesian(ylim=c(-1,1)) +
-theme_minimal(base_size = 18)
+  geom_point(size = .5, alpha = .1) + 
+  geom_line(alpha = .05) + 
+  geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
+  facet_wrap(~parcellation, ncol = 2) +
+  geom_hline(yintercept = 0, color = 'gray')+
+  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+  scale_x_continuous(breaks=c(10,13,16)) +
+  coord_cartesian(ylim=c(-1,1)) +
+  theme_minimal(base_size = 18)
 ```
 
 ## Plot fitted curves for parcels 66 and 380
@@ -119,19 +119,19 @@ ggplot(data.complete, aes(x = age,
                           group = interaction(subjectID, target, domain), 
                           color = target, 
                           linetype = domain)) +
-geom_point(size = .5, alpha = .1) + 
-geom_line(alpha = .05) + 
-geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
-facet_wrap(~parcellation, ncol = 2) +
-geom_hline(yintercept = 0, color = 'gray')+
-scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-scale_x_continuous(breaks=c(10,13,16)) +
-coord_cartesian(ylim=c(-1,1)) +
-theme_minimal(base_size = 18)
+  geom_point(size = .5, alpha = .1) + 
+  geom_line(alpha = .05) + 
+  geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+  facet_wrap(~parcellation, ncol = 2) +
+  geom_hline(yintercept = 0, color = 'gray')+
+  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+  scale_x_continuous(breaks=c(10,13,16)) +
+  coord_cartesian(ylim=c(-1,1)) +
+  theme_minimal(base_size = 18)
 ```
 
 # Visualize predicted values from model
-## Plot LOESS curves for parcels 66 and 380
+## Plot fitted curves for parcels 66 and 380
 ```{r}
 # set color palette
 palette = wes_palette("Zissou", 2, type = "continuous")
@@ -142,38 +142,21 @@ REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], 
 
 # get expected values for each observation based on model.2
 data.complete$expected <- predict(model.2, newdata = data.complete, re.form=REFormula)
+data.complete$expected_mean <- predict(model.2, newdata = data.complete, re.form=NA)
 
 # plot data
 ggplot(data.complete, aes(x = age, 
-                          y = expected, 
-                          group = interaction(subjectID, target, domain), 
+                          y = expected_mean, 
+                          group = interaction(target, domain), 
                           color = target, 
                           linetype = domain)) +
-geom_point(size = .5, alpha = .1) + 
-geom_line(alpha = .05) + 
-geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
-facet_wrap(~parcellation, ncol = 2) +
-geom_hline(yintercept = 0, color = 'gray')+
-scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-scale_x_continuous(breaks=c(10,13,16)) +
-coord_cartesian(ylim=c(-1,1)) +
-theme_minimal(base_size = 18)
-```
-
-## Plot fitted curves for parcels 66 and 380
-```{r}
-ggplot(data.complete, aes(x = age, 
-                          y = expected, 
-                          group = interaction(subjectID, target, domain), 
-                          color = target, 
-                          linetype = domain)) +
-geom_point(size = .5, alpha = .1) + 
-geom_line(alpha = .05) + 
-geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) +
-facet_wrap(~parcellation, ncol = 2) +
-geom_hline(yintercept = 0, color = 'gray')+
-scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-scale_x_continuous(breaks=c(10,13,16)) +
-coord_cartesian(ylim=c(-1,1)) +
-theme_minimal(base_size = 18)
+  geom_point(size = .5, alpha = .1) + 
+  geom_line(alpha = .05) + 
+  geom_line(size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+  facet_wrap(~parcellation, ncol = 2) +
+  geom_hline(yintercept = 0, color = 'gray')+
+  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+  scale_x_continuous(breaks=c(10,13,16)) +
+  coord_cartesian(ylim=c(-1,1)) +
+  theme_minimal(base_size = 18)
 ```
