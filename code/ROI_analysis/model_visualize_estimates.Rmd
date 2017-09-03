@@ -1,15 +1,18 @@
 ---
-title: "model_visualize_estimates"
+title: "Model & visualize parameter estimates"
 author: "Dani Cosme"
 date: "9/1/2017"
-output: html_document
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(fig.width=5, fig.height=3, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.width=10, fig.height=6, warning=FALSE, message=FALSE)
 ```
 
-# load packages
+# Load packages
 ```{r}
 library(tidyverse)
 library(lme4)
@@ -17,7 +20,7 @@ library(lmerTest)
 library(wesanderson)
 ```
 
-# load data
+# Load data
 ```{r}
 data = read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
 age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
@@ -25,7 +28,9 @@ age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariate
          "wave" = wavenum)
 ```
 
-# tidy data
+![Parcels from which mean parameter estimates have been extracted](/Users/danicosme/Documents/MDC/parcel_66_380.png)
+
+# Tidy data
 ## Specify your variables names and levels
 ```{r}
 # tidy raw data
@@ -42,37 +47,50 @@ data1 = data %>%
          target = as.factor(target),
          domain = as.factor(domain)) %>%
   extract(wave, 'wave', 't([0-3]{1})') %>%
-  mutate(wave = as.integer(wave)) %>%
-  filter(parcellation == 380)
+  mutate(wave = as.integer(wave))
 ```
 
-# add age to the dataframe
+# Merge data
+## Add age to the dataframe, center age, and add quadratic age term
 ```{r}
-merged = left_join(data1, age, by = c('subjectID', 'wave'))
+merged = left_join(data1, age, by = c('subjectID', 'wave')) %>%
+  mutate(age_c = age-mean(age, na.rm=TRUE),
+         age2_c = age*age)
 ```
 
-# remove missing data
+# Remove missing data
 ```{r}
 data.complete = merged %>%
   na.omit(.)
 ```
 
-# run LME models and compare
-Predict parameter estimates from task conditions (target and domain) and age
+# Run LME models and compare
+Predict parameter estimates from task conditions (target and domain) and age within parcel 66
+## Linear effect of age, random intercepts
 ```{r}
-# random intercepts
-model.1 = lmer(beta ~ target*domain*age + (1 | subjectID), data=data.complete)
+model.1 = lmer(beta ~ target*domain*age_c + (1 | subjectID), data=filter(data.complete, parcellation == 66))
 summary(model.1)
-
-# random intercepts and slopes 
-model.2 = lmer(beta ~ target*domain*age + (1 + age | subjectID), data=data.complete)
-summary(model.2)
-
-# compare model
-anova(model.1, model.2)
 ```
 
-# visualize raw data
+## Linear effect of age, random intercepts and slopes 
+```{r}
+model.2 = lmer(beta ~ target*domain*age_c + (1 + age_c | subjectID), data=filter(data.complete, parcellation == 66))
+summary(model.2)
+```
+
+## Quadratic effect of age, random intercepts
+```{r}
+model.3 = lmer(beta ~ target*domain*age2_c + (1 | subjectID), data=filter(data.complete, parcellation == 66))
+summary(model.3)
+```
+
+## Compare models
+```{r}
+anova(model.1, model.2, model.3)
+```
+
+# Visualize raw data
+## Plot LOESS curves for parcels 66 and 380
 ```{r}
 # set color palette
 palette = wes_palette("Zissou", 2, type = "continuous")
@@ -85,7 +103,6 @@ ggplot(data.complete, aes(x = age,
                           linetype = domain)) +
 geom_point(size = .5, alpha = .1) + 
 geom_line(alpha = .05) + 
-#geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
 geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
 facet_wrap(~parcellation, ncol = 2) +
 geom_hline(yintercept = 0, color = 'gray')+
@@ -95,7 +112,26 @@ coord_cartesian(ylim=c(-1,1)) +
 theme_minimal(base_size = 18)
 ```
 
-# visualize model estimates
+## Plot fitted curves for parcels 66 and 380
+```{r}
+ggplot(data.complete, aes(x = age, 
+                          y = beta, 
+                          group = interaction(subjectID, target, domain), 
+                          color = target, 
+                          linetype = domain)) +
+geom_point(size = .5, alpha = .1) + 
+geom_line(alpha = .05) + 
+geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+facet_wrap(~parcellation, ncol = 2) +
+geom_hline(yintercept = 0, color = 'gray')+
+scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+scale_x_continuous(breaks=c(10,13,16)) +
+coord_cartesian(ylim=c(-1,1)) +
+theme_minimal(base_size = 18)
+```
+
+# Visualize predicted values from model
+## Plot LOESS curves for parcels 66 and 380
 ```{r}
 # set color palette
 palette = wes_palette("Zissou", 2, type = "continuous")
@@ -105,10 +141,7 @@ REFormulaString = as.character(findbars(model.2@call$formula)[[1]])
 REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], REFormulaString[[3]], ')'))
 
 # get expected values for each observation based on model.2
-data.complete$expected <- predict(model.2, newdata = data.complete,
-                                    re.form=REFormula)
-
-# data.complete$expected_mean <- predict(model_to_plot, newdata = data.complete, re.form=NA)
+data.complete$expected <- predict(model.2, newdata = data.complete, re.form=REFormula)
 
 # plot data
 ggplot(data.complete, aes(x = age, 
@@ -118,8 +151,25 @@ ggplot(data.complete, aes(x = age,
                           linetype = domain)) +
 geom_point(size = .5, alpha = .1) + 
 geom_line(alpha = .05) + 
-geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
-#geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
+geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'loess') + 
+facet_wrap(~parcellation, ncol = 2) +
+geom_hline(yintercept = 0, color = 'gray')+
+scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+scale_x_continuous(breaks=c(10,13,16)) +
+coord_cartesian(ylim=c(-1,1)) +
+theme_minimal(base_size = 18)
+```
+
+## Plot fitted curves for parcels 66 and 380
+```{r}
+ggplot(data.complete, aes(x = age, 
+                          y = expected, 
+                          group = interaction(subjectID, target, domain), 
+                          color = target, 
+                          linetype = domain)) +
+geom_point(size = .5, alpha = .1) + 
+geom_line(alpha = .05) + 
+geom_line(aes(group=interaction(target,domain)), size = .5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) +
 facet_wrap(~parcellation, ncol = 2) +
 geom_hline(yintercept = 0, color = 'gray')+
 scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
