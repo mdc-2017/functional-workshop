@@ -3,9 +3,8 @@ title: "Model & visualize parameter estimates"
 author: "Dani Cosme"
 date: "9/1/2017"
 output:
-  html_document:
+  md_document:
     toc: yes
-    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
