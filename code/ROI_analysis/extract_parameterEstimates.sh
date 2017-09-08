@@ -19,7 +19,7 @@ subjects=`cat /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/subject_lis
 parcellation_atlas=(craddock_all.nii.gz) #roi/parcellation atlas file
 parcellation_map=(31) #parcellation map number (if applicable)
 aligned_parcellation_map=(aligned_craddock_400) #aligned roi/parcellation map name
-aligned_parcellation_num=(380 66) #parcellation number(s) to extract from; use $(seq 1 N) where N is the total number of parcels to extract from all
+aligned_parcellation_num=(116 292) #parcellation number(s) to extract from; use $(seq 1 N) where N is the total number of parcels to extract from all
 waves=(t1 t2 t3) #waves or task names
 fx_cons=(con_0001 con_0002 con_0003 con_0004) #fx con files to extract from
 
