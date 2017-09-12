@@ -1,32 +1,203 @@
+-   [Extract mean parameter
+    estimates](#extract-mean-parameter-estimates)
 -   [Load packages](#load-packages)
 -   [Load data](#load-data)
+-   [ROIs from the Craddock et al. (2012) parcellation
+    atlas](#rois-from-the-craddock-et-al.-2012-parcellation-atlas)
 -   [Tidy data](#tidy-data)
     -   [Specify your variables names and
         levels](#specify-your-variables-names-and-levels)
--   [Merge data](#merge-data)
-    -   [Add age to the dataframe, center age, and add quadratic age
-        term](#add-age-to-the-dataframe-center-age-and-add-quadratic-age-term)
--   [Remove missing data](#remove-missing-data)
--   [Run LME models and compare](#run-lme-models-and-compare)
-    -   [Linear effect of age, random intercepts and
-        slopes](#linear-effect-of-age-random-intercepts-and-slopes)
-    -   [Quadratic effect of age, random
-        intercepts](#quadratic-effect-of-age-random-intercepts)
+-   [Merge data, add age to the data frame and
+    center](#merge-data-add-age-to-the-data-frame-and-center)
+-   [Remove missing data to run LME
+    models](#remove-missing-data-to-run-lme-models)
+-   [Run LME models within parcel 292 and
+    compare](#run-lme-models-within-parcel-292-and-compare)
+    -   [Linear effect of age, random intercepts
+        only](#linear-effect-of-age-random-intercepts-only)
+    -   [Linear effect of age, random intercepts and age
+        slopes](#linear-effect-of-age-random-intercepts-and-age-slopes)
     -   [Compare models](#compare-models)
 -   [Visualize raw data](#visualize-raw-data)
-    -   [Plot LOESS curves for parcels 292 and
-        116](#plot-loess-curves-for-parcels-292-and-116)
-        -   [Main effect](#main-effect)
-        -   [Interaction](#interaction)
     -   [Plot fitted curves for parcels 292 and
         116](#plot-fitted-curves-for-parcels-292-and-116)
-        -   [Main effect](#main-effect-1)
+        -   [Main effect of target](#main-effect-of-target)
+        -   [Interaction between target and
+            domain](#interaction-between-target-and-domain)
+    -   [Plot LOESS curves for parcels 292 and
+        116](#plot-loess-curves-for-parcels-292-and-116)
+        -   [Main effect of target](#main-effect-of-target-1)
+        -   [Interaction between target and
+            domain](#interaction-between-target-and-domain-1)
 -   [Visualize predicted values from
     model](#visualize-predicted-values-from-model)
     -   [Plot fitted curves for parcels 292 and
         116](#plot-fitted-curves-for-parcels-292-and-116-1)
-        -   [Main effect](#main-effect-2)
-        -   [Interaction](#interaction-1)
+        -   [Main effect of target](#main-effect-of-target-2)
+        -   [Interaction between target and
+            domain](#interaction-between-target-and-domain-2)
+
+Extract mean parameter estimates
+================================
+
+Run bash script to calculate mean parameter estimates for each subject
+and condition contrast (condition &gt; rest) within each ROI using AFNI
+`3dmaskave`.
+
+Path to bash script:
+`functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
+
+    #!/bin/bash
+    . ~/.bashrc
+
+    # This script extracts mean parameter estimates and SDs within an ROI or parcel
+    # from subject FX condition contrasts (condition > rest) for each wave. Output is 
+    # saved as a text file in the output directory.
+
+    # Set paths and variables
+    # ------------------------------------------------------------------------------------------
+    # paths
+
+    con_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models' #fx contrast directory
+    atlas_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/ROIs' #roi/parcellation atlas directory 
+    output_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis' #roi/parcellation output directory
+    rx_model='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/all+tlrc' #rx model (for atlas alignment only)
+
+    # variables
+    subjects=`cat /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/subject_list.txt`
+    parcellation_atlas=(craddock_all.nii.gz) #roi/parcellation atlas file
+    parcellation_map=(31) #parcellation map number (if applicable)
+    aligned_parcellation_map=(aligned_craddock_400) #aligned roi/parcellation map name
+    aligned_parcellation_num=(116 292) #parcellation number(s) to extract from; use $(seq 1 N) where N is the total number of parcels to extract from all
+    waves=(t1 t2 t3) #waves or task names
+    fx_cons=(con_0001 con_0002 con_0003 con_0004) #fx con files to extract from
+
+    # Align roi/parcellation map to data
+    # ------------------------------------------------------------------------------------------
+    echo "aligning parcellation map"
+    if [ -f $atlas_dir/${aligned_parcellation_map}+tlrc.BRIK ]; then
+        echo "aligned parcellation map already exists"
+    else 
+    3dAllineate -source $atlas_dir/$parcellation_atlas[$parcellation_map] -master $rx_model -final NN -1Dparam_apply '1D: 12@0'\' -prefix $atlas_dir/$aligned_parcellation_map
+    fi
+
+    # Extract mean parameter estimates and SDs for each subject, wave, contrast, and roi/parcel
+    # ------------------------------------------------------------------------------------------
+
+    for sub in ${subjects[@]}; do 
+        for wave in ${waves[@]}; do 
+            for con in ${fx_cons[@]}; do 
+                for num in ${aligned_parcellation_num[@]}; do 
+                    echo ${sub} ${wave} ${con} ${num} `3dmaskave -sigma -quiet -mrange $num $num -mask $atlas_dir/${aligned_parcellation_map}+tlrc $con_dir/${sub}_${wave}_${con}.nii` >> $output_dir/parameterEstimates.txt
+                done
+            done
+        done
+    done
+
+The output will be saved in a text file
+`functional-workshop/results/ROI_analysis/parameterEstimates.txt`
+
+    library(dplyr)
+    library(knitr)
+
+    read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
+      head(10) %>%
+      kable(format = 'pandoc')
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">V1</th>
+<th align="left">V2</th>
+<th align="left">V3</th>
+<th align="right">V4</th>
+<th align="right">V5</th>
+<th align="right">V6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0001</td>
+<td align="right">116</td>
+<td align="right">-0.5871270</td>
+<td align="right">0.274073</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0001</td>
+<td align="right">292</td>
+<td align="right">-0.3261990</td>
+<td align="right">0.331749</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0002</td>
+<td align="right">116</td>
+<td align="right">-0.0216224</td>
+<td align="right">0.342096</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0002</td>
+<td align="right">292</td>
+<td align="right">-0.0078532</td>
+<td align="right">0.387301</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0003</td>
+<td align="right">116</td>
+<td align="right">-0.5910870</td>
+<td align="right">0.330697</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0003</td>
+<td align="right">292</td>
+<td align="right">-0.2818540</td>
+<td align="right">0.396804</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0004</td>
+<td align="right">116</td>
+<td align="right">-0.0967547</td>
+<td align="right">0.305696</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="left">t1</td>
+<td align="left">con_0004</td>
+<td align="right">292</td>
+<td align="right">-0.0509896</td>
+<td align="right">0.374470</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="left">t2</td>
+<td align="left">con_0001</td>
+<td align="right">116</td>
+<td align="right">-0.6617310</td>
+<td align="right">0.311137</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="left">t2</td>
+<td align="left">con_0001</td>
+<td align="right">292</td>
+<td align="right">-0.4697610</td>
+<td align="right">0.275190</td>
+</tr>
+</tbody>
+</table>
 
 Load packages
 =============
@@ -39,13 +210,20 @@ Load packages
 Load data
 =========
 
+    # load parameter estimate .csv file
     data = read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
+
+    # load age covariates and rename variables
     age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
       rename("subjectID" = Subj,
              "wave" = wavenum)
 
-![Parcels from which mean parameter estimates have been
-extracted](/Users/danicosme/Documents/MDC/parcel_66_380.png)
+ROIs from the Craddock et al. (2012) parcellation atlas
+=======================================================
+
+Mean parameter estimates were extracted from parcel 292 and 116.
+
+<img src="./parcel_116_292_edited.png" width="750">
 
 Tidy data
 =========
@@ -55,41 +233,269 @@ Specify your variables names and levels
 
     # tidy raw data
     data1 = data %>% 
+      # rename variables
       rename('subjectID' = V1,
              'wave' = V2,
              'con' = V3,
              'parcellation' = V4,
              'beta' = V5,
              'sd' = V6) %>%
+      # convert con file names to condition names
       mutate(target = ifelse(con %in% c('con_0001', 'con_0002'), 'self', 'other'), 
              domain = ifelse(con %in% c('con_0001', 'con_0003'), 'academic', 'social'), 
+      # change data type to factor
              parcellation = as.factor(parcellation),
              target = as.factor(target),
              domain = as.factor(domain)) %>%
+      # change to integer
       extract(wave, 'wave', 't([0-3]{1})') %>%
       mutate(wave = as.integer(wave))
 
-Merge data
-==========
-
-Add age to the dataframe, center age, and add quadratic age term
-----------------------------------------------------------------
+Merge data, add age to the data frame and center
+================================================
 
     merged = left_join(data1, age, by = c('subjectID', 'wave')) %>%
-      mutate(age_c = age-mean(age, na.rm=TRUE),
-             age2_c = age*age)
+      mutate(age_c = age-mean(age, na.rm=TRUE))
 
-Remove missing data
-===================
+    # print data frame header
+    merged %>%
+      head(16) %>%
+      kable(format = 'pandoc')
+
+<table>
+<thead>
+<tr class="header">
+<th align="left">subjectID</th>
+<th align="right">wave</th>
+<th align="left">con</th>
+<th align="left">parcellation</th>
+<th align="right">beta</th>
+<th align="right">sd</th>
+<th align="left">target</th>
+<th align="left">domain</th>
+<th align="right">age</th>
+<th align="right">age_c</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0001</td>
+<td align="left">116</td>
+<td align="right">-0.5871270</td>
+<td align="right">0.274073</td>
+<td align="left">self</td>
+<td align="left">academic</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0001</td>
+<td align="left">292</td>
+<td align="right">-0.3261990</td>
+<td align="right">0.331749</td>
+<td align="left">self</td>
+<td align="left">academic</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0002</td>
+<td align="left">116</td>
+<td align="right">-0.0216224</td>
+<td align="right">0.342096</td>
+<td align="left">self</td>
+<td align="left">social</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0002</td>
+<td align="left">292</td>
+<td align="right">-0.0078532</td>
+<td align="right">0.387301</td>
+<td align="left">self</td>
+<td align="left">social</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0003</td>
+<td align="left">116</td>
+<td align="right">-0.5910870</td>
+<td align="right">0.330697</td>
+<td align="left">other</td>
+<td align="left">academic</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0003</td>
+<td align="left">292</td>
+<td align="right">-0.2818540</td>
+<td align="right">0.396804</td>
+<td align="left">other</td>
+<td align="left">academic</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0004</td>
+<td align="left">116</td>
+<td align="right">-0.0967547</td>
+<td align="right">0.305696</td>
+<td align="left">other</td>
+<td align="left">social</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">1</td>
+<td align="left">con_0004</td>
+<td align="left">292</td>
+<td align="right">-0.0509896</td>
+<td align="right">0.374470</td>
+<td align="left">other</td>
+<td align="left">social</td>
+<td align="right">10.41530</td>
+<td align="right">-2.0912751</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0001</td>
+<td align="left">116</td>
+<td align="right">-0.6617310</td>
+<td align="right">0.311137</td>
+<td align="left">self</td>
+<td align="left">academic</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0001</td>
+<td align="left">292</td>
+<td align="right">-0.4697610</td>
+<td align="right">0.275190</td>
+<td align="left">self</td>
+<td align="left">academic</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0002</td>
+<td align="left">116</td>
+<td align="right">-0.3545030</td>
+<td align="right">0.338036</td>
+<td align="left">self</td>
+<td align="left">social</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0002</td>
+<td align="left">292</td>
+<td align="right">-0.1359760</td>
+<td align="right">0.424825</td>
+<td align="left">self</td>
+<td align="left">social</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0003</td>
+<td align="left">116</td>
+<td align="right">-0.5791710</td>
+<td align="right">0.404919</td>
+<td align="left">other</td>
+<td align="left">academic</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0003</td>
+<td align="left">292</td>
+<td align="right">-0.5360000</td>
+<td align="right">0.272914</td>
+<td align="left">other</td>
+<td align="left">academic</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="odd">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0004</td>
+<td align="left">116</td>
+<td align="right">-0.2961900</td>
+<td align="right">0.273353</td>
+<td align="left">other</td>
+<td align="left">social</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+<tr class="even">
+<td align="left">s001</td>
+<td align="right">2</td>
+<td align="left">con_0004</td>
+<td align="left">292</td>
+<td align="right">-0.2756520</td>
+<td align="right">0.265749</td>
+<td align="left">other</td>
+<td align="left">social</td>
+<td align="right">13.48767</td>
+<td align="right">0.9810956</td>
+</tr>
+</tbody>
+</table>
+
+Remove missing data to run LME models
+=====================================
 
     data.complete = merged %>%
       na.omit(.)
 
-Run LME models and compare
-==========================
+    # print number of rows
+    cat('raw data: ', nrow(merged))
+
+    ## raw data:  1944
+
+    cat('complete data: ', nrow(data.complete))
+
+    ## complete data:  1296
+
+Run LME models within parcel 292 and compare
+============================================
 
 Predict parameter estimates from task conditions (target and domain) and
-age within parcel 292 \#\# Linear effect of age, random intercepts
+age within parcel 292.
+
+Linear effect of age, random intercepts only
+--------------------------------------------
 
     model.1 = lmer(beta ~ target*domain*age_c + (1 | subjectID), data=filter(data.complete, parcellation == 292))
     summary(model.1)
@@ -143,8 +549,8 @@ age within parcel 292 \#\# Linear effect of age, random intercepts
     ## domnscl:g_c -0.040  0.038  0.076 -0.687 -0.054  0.500       
     ## trgtslf:d:_  0.028 -0.054 -0.054  0.486  0.076 -0.707 -0.707
 
-Linear effect of age, random intercepts and slopes
---------------------------------------------------
+Linear effect of age, random intercepts and age slopes
+------------------------------------------------------
 
     model.2 = lmer(beta ~ target*domain*age_c + (1 + age_c | subjectID), data=filter(data.complete, parcellation == 292))
     summary(model.2)
@@ -199,154 +605,70 @@ Linear effect of age, random intercepts and slopes
     ## domnscl:g_c -0.040  0.038  0.076 -0.670 -0.054  0.500       
     ## trgtslf:d:_  0.028 -0.054 -0.054  0.474  0.076 -0.707 -0.707
 
-Quadratic effect of age, random intercepts
-------------------------------------------
-
-    model.3 = lmer(beta ~ target*domain*age_c + target*domain*age2_c + (1 | subjectID), data=filter(data.complete, parcellation == 292))
-    summary(model.3)
-
-    ## Linear mixed model fit by REML t-tests use Satterthwaite approximations
-    ##   to degrees of freedom [lmerMod]
-    ## Formula: beta ~ target * domain * age_c + target * domain * age2_c + (1 |  
-    ##     subjectID)
-    ##    Data: filter(data.complete, parcellation == 292)
-    ## 
-    ## REML criterion at convergence: 1132.5
-    ## 
-    ## Scaled residuals: 
-    ##     Min      1Q  Median      3Q     Max 
-    ## -3.9876 -0.4931  0.0304  0.4609  4.2003 
-    ## 
-    ## Random effects:
-    ##  Groups    Name        Variance Std.Dev.
-    ##  subjectID (Intercept) 0.1002   0.3165  
-    ##  Residual              0.2582   0.5081  
-    ## Number of obs: 648, groups:  subjectID, 81
-    ## 
-    ## Fixed effects:
-    ##                                  Estimate Std. Error         df t value
-    ## (Intercept)                    -4.152e-02  1.383e+00  5.665e+02  -0.030
-    ## targetself                      1.103e+00  1.926e+00  5.507e+02   0.572
-    ## domainsocial                    1.782e+00  1.926e+00  5.507e+02   0.925
-    ## age_c                          -3.325e-02  2.217e-01  5.660e+02  -0.150
-    ## age2_c                         -2.067e-04  8.483e-03  5.649e+02  -0.024
-    ## targetself:domainsocial        -5.229e-01  2.724e+00  5.507e+02  -0.192
-    ## targetself:age_c                2.356e-01  3.089e-01  5.507e+02   0.763
-    ## domainsocial:age_c              3.000e-01  3.089e-01  5.507e+02   0.971
-    ## targetself:age2_c              -6.580e-03  1.183e-02  5.507e+02  -0.556
-    ## domainsocial:age2_c            -1.037e-02  1.183e-02  5.507e+02  -0.877
-    ## targetself:domainsocial:age_c  -1.602e-01  4.369e-01  5.507e+02  -0.367
-    ## targetself:domainsocial:age2_c  3.809e-03  1.672e-02  5.507e+02   0.228
-    ##                                Pr(>|t|)
-    ## (Intercept)                       0.976
-    ## targetself                        0.567
-    ## domainsocial                      0.355
-    ## age_c                             0.881
-    ## age2_c                            0.981
-    ## targetself:domainsocial           0.848
-    ## targetself:age_c                  0.446
-    ## domainsocial:age_c                0.332
-    ## targetself:age2_c                 0.578
-    ## domainsocial:age2_c               0.381
-    ## targetself:domainsocial:age_c     0.714
-    ## targetself:domainsocial:age2_c    0.820
-    ## 
-    ## Correlation of Fixed Effects:
-    ##             (Intr) trgtsl dmnscl age_c  age2_c trgts: trgt:_ dmns:_ trg:2_
-    ## targetself  -0.697                                                        
-    ## domainsocil -0.697  0.500                                                 
-    ## age_c        0.997 -0.695 -0.695                                          
-    ## age2_c      -0.999  0.697  0.697 -0.997                                   
-    ## trgtslf:dmn  0.493 -0.707 -0.707  0.491 -0.493                            
-    ## trgtslf:g_c -0.694  0.997  0.499 -0.697  0.695 -0.705                     
-    ## domnscl:g_c -0.694  0.499  0.997 -0.697  0.695 -0.705  0.500              
-    ## trgtslf:g2_  0.696 -1.000 -0.500  0.695 -0.697  0.707 -0.997 -0.499       
-    ## dmnscl:g2_c  0.696 -0.500 -1.000  0.695 -0.697  0.707 -0.499 -0.997  0.500
-    ## trgtslf:d:_  0.491 -0.705 -0.705  0.493 -0.492  0.997 -0.707 -0.707  0.705
-    ## trgtslf::2_ -0.492  0.707  0.707 -0.491  0.493 -1.000  0.705  0.705 -0.707
-    ##             dmn:2_ trg::_
-    ## targetself               
-    ## domainsocil              
-    ## age_c                    
-    ## age2_c                   
-    ## trgtslf:dmn              
-    ## trgtslf:g_c              
-    ## domnscl:g_c              
-    ## trgtslf:g2_              
-    ## dmnscl:g2_c              
-    ## trgtslf:d:_  0.705       
-    ## trgtslf::2_ -0.707 -0.997
-
 Compare models
 --------------
 
-    anova(model.1, model.2, model.3)
+**model.1:** `beta ~ target * domain * age_c + (1 | subjectID)`
 
-    ## Data: filter(data.complete, parcellation == 292)
-    ## Models:
-    ## object: beta ~ target * domain * age_c + (1 | subjectID)
-    ## ..1: beta ~ target * domain * age_c + (1 + age_c | subjectID)
-    ## ..2: beta ~ target * domain * age_c + target * domain * age2_c + (1 | 
-    ## ..2:     subjectID)
-    ##        Df    AIC    BIC  logLik deviance  Chisq Chi Df Pr(>Chisq)  
-    ## object 10 1083.7 1128.4 -531.82   1063.7                           
-    ## ..1    12 1082.7 1136.4 -529.36   1058.7 4.9232      2     0.0853 .
-    ## ..2    14 1087.1 1149.8 -529.57   1059.1 0.0000      2     1.0000  
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+**model.2:** `beta ~ target * domain * age_c + (1 + age_c | subjectID)`
+
+    anova(model.1, model.2) %>%
+      `row.names<-`(c('model.1', 'model.2')) %>%
+      kable()
+
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">Df</th>
+<th align="right">AIC</th>
+<th align="right">BIC</th>
+<th align="right">logLik</th>
+<th align="right">deviance</th>
+<th align="right">Chisq</th>
+<th align="right">Chi Df</th>
+<th align="right">Pr(&gt;Chisq)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>model.1</td>
+<td align="right">10</td>
+<td align="right">1083.649</td>
+<td align="right">1128.388</td>
+<td align="right">-531.8247</td>
+<td align="right">1063.649</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td>model.2</td>
+<td align="right">12</td>
+<td align="right">1082.726</td>
+<td align="right">1136.413</td>
+<td align="right">-529.3631</td>
+<td align="right">1058.726</td>
+<td align="right">4.923206</td>
+<td align="right">2</td>
+<td align="right">0.0852981</td>
+</tr>
+</tbody>
+</table>
+
+Adding age as a random effect does not significantly improve the model
+fit.
 
 Visualize raw data
 ==================
 
-Plot LOESS curves for parcels 292 and 116
------------------------------------------
-
-### Main effect
-
     # set color palette
     palette = wes_palette("Zissou", 2, type = "continuous")
-
-    # plot data
-    ggplot(data.complete, aes(x = age, 
-                              y = beta, 
-                              group = interaction(subjectID, target, domain), 
-                              color = target, 
-                              linetype = domain)) +
-      geom_point(size = .5, alpha = .1) + 
-      geom_line(alpha = .1) + 
-      geom_line(aes(group=target), size = 1.5, stat = 'smooth', method = 'loess') + 
-      facet_wrap(~parcellation, ncol = 2) +
-      geom_hline(yintercept = 0, color = 'gray')+
-      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-      scale_x_continuous(breaks=c(10,13,16)) +
-      coord_cartesian(ylim=c(-1,1)) +
-      theme_minimal(base_size = 18)
-
-![](model_visualize_estimates_files/figure-markdown_strict/unnamed-chunk-10-1.png)
-
-### Interaction
-
-    ggplot(data.complete, aes(x = age, 
-                              y = beta, 
-                              group = interaction(subjectID, target, domain), 
-                              color = target, 
-                              linetype = domain)) +
-      geom_point(size = .5, alpha = .1) + 
-      geom_line(alpha = .1) + 
-      geom_line(aes(group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'loess') + 
-      facet_wrap(~parcellation, ncol = 2) +
-      geom_hline(yintercept = 0, color = 'gray')+
-      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-      scale_x_continuous(breaks=c(10,13,16)) +
-      coord_cartesian(ylim=c(-1,1)) +
-      theme_minimal(base_size = 18)
-
-![](model_visualize_estimates_files/figure-markdown_strict/unnamed-chunk-11-1.png)
 
 Plot fitted curves for parcels 292 and 116
 ------------------------------------------
 
-### Main effect
+### Main effect of target
 
     ggplot(data.complete, aes(x = age, 
                               y = beta, 
@@ -362,8 +684,9 @@ Plot fitted curves for parcels 292 and 116
       coord_cartesian(ylim=c(-1,1)) +
       theme_minimal(base_size = 18)
 
-![](model_visualize_estimates_files/figure-markdown_strict/unnamed-chunk-12-1.png)
-\#\#\# Interaction
+![](model_visualize_estimates_files/figure-markdown_strict/raw%20fitted%20main%20effect-1.png)
+
+### Interaction between target and domain
 
     ggplot(data.complete, aes(x = age, 
                               y = beta, 
@@ -380,16 +703,54 @@ Plot fitted curves for parcels 292 and 116
       coord_cartesian(ylim=c(-1,1)) +
       theme_minimal(base_size = 18)
 
-![](model_visualize_estimates_files/figure-markdown_strict/unnamed-chunk-13-1.png)
+![](model_visualize_estimates_files/figure-markdown_strict/raw%20fitted%20interaction-1.png)
+
+Plot LOESS curves for parcels 292 and 116
+-----------------------------------------
+
+### Main effect of target
+
+    ggplot(data.complete, aes(x = age, 
+                              y = beta, 
+                              group = interaction(subjectID, target, domain), 
+                              color = target, 
+                              linetype = domain)) +
+      geom_point(size = .5, alpha = .1) + 
+      geom_line(alpha = .1) + 
+      geom_line(aes(group=target), size = 1.5, stat = 'smooth', method = 'loess') + 
+      facet_wrap(~parcellation, ncol = 2) +
+      geom_hline(yintercept = 0, color = 'gray')+
+      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+      scale_x_continuous(breaks=c(10,13,16)) +
+      coord_cartesian(ylim=c(-1,1)) +
+      theme_minimal(base_size = 18)
+
+![](model_visualize_estimates_files/figure-markdown_strict/raw%20LOESS%20main%20effect-1.png)
+
+### Interaction between target and domain
+
+    ggplot(data.complete, aes(x = age, 
+                              y = beta, 
+                              group = interaction(subjectID, target, domain), 
+                              color = target, 
+                              linetype = domain)) +
+      geom_point(size = .5, alpha = .1) + 
+      geom_line(alpha = .1) + 
+      geom_line(aes(group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'loess') + 
+      facet_wrap(~parcellation, ncol = 2) +
+      geom_hline(yintercept = 0, color = 'gray')+
+      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+      scale_x_continuous(breaks=c(10,13,16)) +
+      coord_cartesian(ylim=c(-1,1)) +
+      theme_minimal(base_size = 18)
+
+![](model_visualize_estimates_files/figure-markdown_strict/raw%20LOESS%20interaction-1.png)
 
 Visualize predicted values from model
 =====================================
 
 Plot fitted curves for parcels 292 and 116
 ------------------------------------------
-
-    # set color palette
-    palette = wes_palette("Zissou", 2, type = "continuous")
 
     # extract random effects formula from model.2 and reconstruct it to use with the `predict` function
     REFormulaString = as.character(findbars(model.2@call$formula)[[1]])
@@ -399,7 +760,7 @@ Plot fitted curves for parcels 292 and 116
     data.complete$expected <- predict(model.2, newdata = data.complete, re.form=REFormula)
     data.complete$expected_mean <- predict(model.2, newdata = data.complete, re.form=NA)
 
-### Main effect
+### Main effect of target
 
     ggplot(data.complete, aes(x = age, 
                               y = expected_mean, 
@@ -412,9 +773,9 @@ Plot fitted curves for parcels 292 and 116
       coord_cartesian(ylim=c(-1,1)) +
       theme_minimal(base_size = 18)
 
-![](model_visualize_estimates_files/figure-markdown_strict/unnamed-chunk-15-1.png)
+![](model_visualize_estimates_files/figure-markdown_strict/predicted%20main%20effect-1.png)
 
-### Interaction
+### Interaction between target and domain
 
     ggplot(data.complete, aes(x = age, 
                               y = expected_mean, 
@@ -429,4 +790,4 @@ Plot fitted curves for parcels 292 and 116
       coord_cartesian(ylim=c(-1,1)) +
       theme_minimal(base_size = 18)
 
-![](model_visualize_estimates_files/figure-markdown_strict/unnamed-chunk-16-1.png)
+![](model_visualize_estimates_files/figure-markdown_strict/predicted%20interaction-1.png)

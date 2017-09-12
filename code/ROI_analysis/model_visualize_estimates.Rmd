@@ -1,5 +1,5 @@
 ---
-title: "Model & visualize parameter estimates"
+title: "Model & visualize parameter estimates in R"
 author: "Dani Cosme"
 date: "9/1/2017"
 output:
@@ -8,11 +8,74 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(fig.width=10, fig.height=6, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(fig.width=8, fig.height=6, warning=FALSE, message=FALSE)
+```
+
+# Extract mean parameter estimates
+Run bash script to calculate mean parameter estimates for each subject and condition contrast (condition > rest) within each ROI using AFNI `3dmaskave`.
+
+Path to bash script: `functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
+```{bash, eval=FALSE}
+#!/bin/bash
+. ~/.bashrc
+
+# This script extracts mean parameter estimates and SDs within an ROI or parcel
+# from subject FX condition contrasts (condition > rest) for each wave. Output is 
+# saved as a text file in the output directory.
+
+# Set paths and variables
+# ------------------------------------------------------------------------------------------
+# paths
+
+con_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models' #fx contrast directory
+atlas_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/ROIs' #roi/parcellation atlas directory 
+output_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis' #roi/parcellation output directory
+rx_model='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/all+tlrc' #rx model (for atlas alignment only)
+
+# variables
+subjects=`cat /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/subject_list.txt`
+parcellation_atlas=(craddock_all.nii.gz) #roi/parcellation atlas file
+parcellation_map=(31) #parcellation map number (if applicable)
+aligned_parcellation_map=(aligned_craddock_400) #aligned roi/parcellation map name
+aligned_parcellation_num=(116 292) #parcellation number(s) to extract from; use $(seq 1 N) where N is the total number of parcels to extract from all
+waves=(t1 t2 t3) #waves or task names
+fx_cons=(con_0001 con_0002 con_0003 con_0004) #fx con files to extract from
+
+# Align roi/parcellation map to data
+# ------------------------------------------------------------------------------------------
+echo "aligning parcellation map"
+if [ -f $atlas_dir/${aligned_parcellation_map}+tlrc.BRIK ]; then
+	echo "aligned parcellation map already exists"
+else 
+3dAllineate -source $atlas_dir/$parcellation_atlas[$parcellation_map] -master $rx_model -final NN -1Dparam_apply '1D: 12@0'\' -prefix $atlas_dir/$aligned_parcellation_map
+fi
+
+# Extract mean parameter estimates and SDs for each subject, wave, contrast, and roi/parcel
+# ------------------------------------------------------------------------------------------
+
+for sub in ${subjects[@]}; do 
+	for wave in ${waves[@]}; do 
+		for con in ${fx_cons[@]}; do 
+			for num in ${aligned_parcellation_num[@]}; do 
+				echo ${sub} ${wave} ${con} ${num} `3dmaskave -sigma -quiet -mrange $num $num -mask $atlas_dir/${aligned_parcellation_map}+tlrc $con_dir/${sub}_${wave}_${con}.nii` >> $output_dir/parameterEstimates.txt
+			done
+		done
+	done
+done
+```
+
+The output will be saved in a text file `functional-workshop/results/ROI_analysis/parameterEstimates.txt`
+```{r}
+library(dplyr)
+library(knitr)
+
+read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
+  head(10) %>%
+  kable(format = 'pandoc')
 ```
 
 # Load packages
-```{r}
+```{r, load packages}
 library(tidyverse)
 library(lme4)
 library(lmerTest)
@@ -20,119 +83,103 @@ library(wesanderson)
 ```
 
 # Load data
-```{r}
+```{r, load data}
+# load parameter estimate .csv file
 data = read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
+
+# load age covariates and rename variables
 age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
   rename("subjectID" = Subj,
          "wave" = wavenum)
 ```
 
-![Parcels from which mean parameter estimates have been extracted](/Users/danicosme/Documents/MDC/parcel_66_380.png)
+# ROIs from the Craddock et al. (2012) parcellation atlas
+Mean parameter estimates were extracted from parcel 292 and 116.
+
+<img src="./parcel_116_292_edited.png" width="750">
 
 # Tidy data
 ## Specify your variables names and levels
-```{r}
+```{r, tidy data}
 # tidy raw data
 data1 = data %>% 
+  # rename variables
   rename('subjectID' = V1,
          'wave' = V2,
          'con' = V3,
          'parcellation' = V4,
          'beta' = V5,
          'sd' = V6) %>%
+  # convert con file names to condition names
   mutate(target = ifelse(con %in% c('con_0001', 'con_0002'), 'self', 'other'), 
          domain = ifelse(con %in% c('con_0001', 'con_0003'), 'academic', 'social'), 
+  # change data type to factor
          parcellation = as.factor(parcellation),
          target = as.factor(target),
          domain = as.factor(domain)) %>%
+  # change to integer
   extract(wave, 'wave', 't([0-3]{1})') %>%
   mutate(wave = as.integer(wave))
 ```
 
-# Merge data
-## Add age to the dataframe, center age, and add quadratic age term
-```{r}
+# Merge data, add age to the data frame and center
+```{r, merge data}
 merged = left_join(data1, age, by = c('subjectID', 'wave')) %>%
-  mutate(age_c = age-mean(age, na.rm=TRUE),
-         age2_c = age*age)
+  mutate(age_c = age-mean(age, na.rm=TRUE))
+
+# print data frame header
+merged %>%
+  head(16) %>%
+  kable(format = 'pandoc')
 ```
 
-# Remove missing data
-```{r}
+# Remove missing data to run LME models
+```{r, remove missing data}
 data.complete = merged %>%
   na.omit(.)
+
+# print number of rows
+cat('raw data: ', nrow(merged))
+cat('complete data: ', nrow(data.complete))
 ```
 
-# Run LME models and compare
-Predict parameter estimates from task conditions (target and domain) and age within parcel 292
-## Linear effect of age, random intercepts
-```{r}
+# Run LME models within parcel 292 and compare 
+Predict parameter estimates from task conditions (target and domain) and age within parcel 292.
+
+## Linear effect of age, random intercepts only
+```{r, model.1}
 model.1 = lmer(beta ~ target*domain*age_c + (1 | subjectID), data=filter(data.complete, parcellation == 292))
 summary(model.1)
 ```
 
-## Linear effect of age, random intercepts and slopes 
-```{r}
+## Linear effect of age, random intercepts and age slopes 
+```{r, model.2}
 model.2 = lmer(beta ~ target*domain*age_c + (1 + age_c | subjectID), data=filter(data.complete, parcellation == 292))
 summary(model.2)
 ```
 
-## Quadratic effect of age, random intercepts
-```{r}
-model.3 = lmer(beta ~ target*domain*age_c + target*domain*age2_c + (1 | subjectID), data=filter(data.complete, parcellation == 292))
-summary(model.3)
+## Compare models
+**model.1:** `beta ~ target * domain * age_c + (1 | subjectID)`
+  
+**model.2:** `beta ~ target * domain * age_c + (1 + age_c | subjectID)`
+
+```{r, compare models}
+anova(model.1, model.2) %>%
+  `row.names<-`(c('model.1', 'model.2')) %>%
+  kable()
 ```
 
-## Compare models
-```{r}
-anova(model.1, model.2, model.3)
-```
+Adding age as a random effect does not significantly improve the model fit.  
 
 # Visualize raw data
-## Plot LOESS curves for parcels 292 and 116
-### Main effect
-```{r}
+```{r, palette}
 # set color palette
 palette = wes_palette("Zissou", 2, type = "continuous")
-
-# plot data
-ggplot(data.complete, aes(x = age, 
-                          y = beta, 
-                          group = interaction(subjectID, target, domain), 
-                          color = target, 
-                          linetype = domain)) +
-  geom_point(size = .5, alpha = .1) + 
-  geom_line(alpha = .1) + 
-  geom_line(aes(group=target), size = 1.5, stat = 'smooth', method = 'loess') + 
-  facet_wrap(~parcellation, ncol = 2) +
-  geom_hline(yintercept = 0, color = 'gray')+
-  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-  scale_x_continuous(breaks=c(10,13,16)) +
-  coord_cartesian(ylim=c(-1,1)) +
-  theme_minimal(base_size = 18)
-```
-
-### Interaction
-```{r}
-ggplot(data.complete, aes(x = age, 
-                          y = beta, 
-                          group = interaction(subjectID, target, domain), 
-                          color = target, 
-                          linetype = domain)) +
-  geom_point(size = .5, alpha = .1) + 
-  geom_line(alpha = .1) + 
-  geom_line(aes(group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'loess') + 
-  facet_wrap(~parcellation, ncol = 2) +
-  geom_hline(yintercept = 0, color = 'gray')+
-  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
-  scale_x_continuous(breaks=c(10,13,16)) +
-  coord_cartesian(ylim=c(-1,1)) +
-  theme_minimal(base_size = 18)
 ```
 
 ## Plot fitted curves for parcels 292 and 116
-### Main effect
-```{r}
+### Main effect of target
+```{r, raw fitted main effect}
 ggplot(data.complete, aes(x = age, 
                           y = beta, 
                           group = interaction(subjectID, target, domain), 
@@ -147,8 +194,9 @@ ggplot(data.complete, aes(x = age,
   coord_cartesian(ylim=c(-1,1)) +
   theme_minimal(base_size = 18)
 ```
-### Interaction
-```{r}
+
+### Interaction between target and domain
+```{r, raw fitted interaction}
 ggplot(data.complete, aes(x = age, 
                           y = beta, 
                           group = interaction(subjectID, target, domain), 
@@ -165,12 +213,46 @@ ggplot(data.complete, aes(x = age,
   theme_minimal(base_size = 18)
 ```
 
+## Plot LOESS curves for parcels 292 and 116
+### Main effect of target
+```{r, raw LOESS main effect}
+ggplot(data.complete, aes(x = age, 
+                          y = beta, 
+                          group = interaction(subjectID, target, domain), 
+                          color = target, 
+                          linetype = domain)) +
+  geom_point(size = .5, alpha = .1) + 
+  geom_line(alpha = .1) + 
+  geom_line(aes(group=target), size = 1.5, stat = 'smooth', method = 'loess') + 
+  facet_wrap(~parcellation, ncol = 2) +
+  geom_hline(yintercept = 0, color = 'gray')+
+  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+  scale_x_continuous(breaks=c(10,13,16)) +
+  coord_cartesian(ylim=c(-1,1)) +
+  theme_minimal(base_size = 18)
+```
+
+### Interaction between target and domain
+```{r, raw LOESS interaction}
+ggplot(data.complete, aes(x = age, 
+                          y = beta, 
+                          group = interaction(subjectID, target, domain), 
+                          color = target, 
+                          linetype = domain)) +
+  geom_point(size = .5, alpha = .1) + 
+  geom_line(alpha = .1) + 
+  geom_line(aes(group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'loess') + 
+  facet_wrap(~parcellation, ncol = 2) +
+  geom_hline(yintercept = 0, color = 'gray')+
+  scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+  scale_x_continuous(breaks=c(10,13,16)) +
+  coord_cartesian(ylim=c(-1,1)) +
+  theme_minimal(base_size = 18)
+```
+
 # Visualize predicted values from model
 ## Plot fitted curves for parcels 292 and 116
-```{r}
-# set color palette
-palette = wes_palette("Zissou", 2, type = "continuous")
-
+```{r, predict}
 # extract random effects formula from model.2 and reconstruct it to use with the `predict` function
 REFormulaString = as.character(findbars(model.2@call$formula)[[1]])
 REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], REFormulaString[[3]], ')'))
@@ -180,8 +262,8 @@ data.complete$expected <- predict(model.2, newdata = data.complete, re.form=REFo
 data.complete$expected_mean <- predict(model.2, newdata = data.complete, re.form=NA)
 ```
 
-### Main effect
-```{r}
+### Main effect of target
+```{r, predicted main effect}
 ggplot(data.complete, aes(x = age, 
                           y = expected_mean, 
                           color = target)) +
@@ -194,8 +276,8 @@ ggplot(data.complete, aes(x = age,
   theme_minimal(base_size = 18)
 ```
 
-### Interaction
-```{r}
+### Interaction between target and domain
+```{r, predicted interaction}
 ggplot(data.complete, aes(x = age, 
                           y = expected_mean, 
                           group = interaction(target, domain), 
