@@ -1,5 +1,5 @@
--   [ROIs from the Craddock et al. (2012) parcellation
-    atlas](#rois-from-the-craddock-et-al.-2012-parcellation-atlas)
+-   [ROIs from the [Craddock et al. (2012) parcellation
+    atlas](http://ccraddock.github.io/cluster_roi/atlases.html)](#rois-from-the-craddock-et-al.-2012-parcellation-atlas)
 -   [Extract mean parameter
     estimates](#extract-mean-parameter-estimates)
 -   [Load packages](#load-packages)
@@ -37,10 +37,14 @@
         -   [Interaction between target and
             domain](#interaction-between-target-and-domain-2)
 
-ROIs from the Craddock et al. (2012) parcellation atlas
-=======================================================
+ROIs from the [Craddock et al. (2012) parcellation atlas](http://ccraddock.github.io/cluster_roi/atlases.html)
+==============================================================================================================
 
-Mean parameter estimates were extracted from parcel 292 and 116.
+Mean parameter estimates were extracted from parcel 292 and 116. The
+parcellation atlas can be found in
+\``functional-workshop/data/ROIs/craddock_all.nii.gz`. This atlas has
+multiple volumes within the 4D file, and we extracted from the K=400
+atlas, which is the 31st volume in AFNI (index = 0 in AFNI).
 
 <img src="./parcel_116_292_edited.png" width="750">
 
