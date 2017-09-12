@@ -47,9 +47,9 @@ Mean parameter estimates were extracted from parcel 292 and 116.
 Extract mean parameter estimates
 ================================
 
-Run bash script to calculate mean parameter estimates for each subject
-and condition contrast (condition &gt; rest) within each ROI using AFNI
-`3dmaskave`.
+Run bash script to calculate mean parameter estimates for each subject,
+wave, and condition contrast (condition &gt; rest) within each ROI using
+AFNI `3dmaskave`.
 
 Path to bash script:
 `functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
