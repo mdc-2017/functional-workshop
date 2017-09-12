@@ -11,6 +11,11 @@ output:
 knitr::opts_chunk$set(fig.width=8, fig.height=6, warning=FALSE, message=FALSE)
 ```
 
+# ROIs from the Craddock et al. (2012) parcellation atlas
+Mean parameter estimates were extracted from parcel 292 and 116.
+
+<img src="./parcel_116_292_edited.png" width="750">
+
 # Extract mean parameter estimates
 Run bash script to calculate mean parameter estimates for each subject and condition contrast (condition > rest) within each ROI using AFNI `3dmaskave`.
 
@@ -92,11 +97,6 @@ age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariate
   rename("subjectID" = Subj,
          "wave" = wavenum)
 ```
-
-# ROIs from the Craddock et al. (2012) parcellation atlas
-Mean parameter estimates were extracted from parcel 292 and 116.
-
-<img src="./parcel_116_292_edited.png" width="750">
 
 # Tidy data
 ## Specify your variables names and levels

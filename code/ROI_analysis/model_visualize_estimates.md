@@ -1,9 +1,9 @@
+-   [ROIs from the Craddock et al. (2012) parcellation
+    atlas](#rois-from-the-craddock-et-al.-2012-parcellation-atlas)
 -   [Extract mean parameter
     estimates](#extract-mean-parameter-estimates)
 -   [Load packages](#load-packages)
 -   [Load data](#load-data)
--   [ROIs from the Craddock et al. (2012) parcellation
-    atlas](#rois-from-the-craddock-et-al.-2012-parcellation-atlas)
 -   [Tidy data](#tidy-data)
     -   [Specify your variables names and
         levels](#specify-your-variables-names-and-levels)
@@ -36,6 +36,13 @@
         -   [Main effect of target](#main-effect-of-target-2)
         -   [Interaction between target and
             domain](#interaction-between-target-and-domain-2)
+
+ROIs from the Craddock et al. (2012) parcellation atlas
+=======================================================
+
+Mean parameter estimates were extracted from parcel 292 and 116.
+
+<img src="./parcel_116_292_edited.png" width="750">
 
 Extract mean parameter estimates
 ================================
@@ -217,13 +224,6 @@ Load data
     age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
       rename("subjectID" = Subj,
              "wave" = wavenum)
-
-ROIs from the Craddock et al. (2012) parcellation atlas
-=======================================================
-
-Mean parameter estimates were extracted from parcel 292 and 116.
-
-<img src="./parcel_116_292_edited.png" width="750">
 
 Tidy data
 =========
