@@ -3,9 +3,8 @@ title: "Running AFNI 3dLME"
 author: "Dani Cosme"
 date: "9/12/2017"
 output:
-  html_document:
+  md_document:
     toc: yes
-    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
