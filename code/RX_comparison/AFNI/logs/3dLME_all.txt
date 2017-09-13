@@ -243,4 +243,4 @@ Z slice  49 done:  08/29/17 19:15:23.974
 Z slice  50 done:  08/29/17 19:16:57.991 
 Z slice  51 done:  08/29/17 19:18:14.618 
 Z slice  52 done:  08/29/17 19:19:33.578 
-[1] "Congratulations! You've got an output age_motionExclusions+tlrc"
+[1] "Congratulations! You've got an output all+tlrc"

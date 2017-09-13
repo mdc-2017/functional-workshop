@@ -139,4 +139,4 @@ Z slice  49 done:  08/29/17 18:25:52.932
 Z slice  50 done:  08/29/17 18:26:53.841 
 Z slice  51 done:  08/29/17 18:27:46.152 
 Z slice  52 done:  08/29/17 18:28:21.834 
-[1] "Congratulations! You've got an output age_3TsExclusions+tlrc"
+[1] "Congratulations! You've got an output 3Ts+tlrc"
