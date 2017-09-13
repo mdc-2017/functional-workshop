@@ -10,12 +10,12 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 #	- prefix = model name
 #	- jobs = number of parallel processors
 #	- model = model formula
-#	- resid = residual file name 
 #	- ranEff = random effects, 1 = intercept
 #	- SS_type = sum of squares type, 3 = marginal
 #	- qVars = quantitative variables
 #	- qVars = centering values for quantitative variables
 #	- mask = binarized group-level mask
+#	- resid = residual file name 
 #	- num_glt = number of contrasts (i.e. general linear tests)
 #	- gltLabel k = contrast label for contrast k
 #	- gltCode k = contrast code for contrast k
@@ -24,12 +24,12 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 3dLME -prefix 3Ts \
 	-jobs 8 \
 	-model  "target*domain*age_c+target*domain*age_c2" \
-	-resid	3Ts_residuals	\
 	-ranEff "~1+age_c" \
 	-SS_type 3 \
 	-qVars "age_c,age_c2" \
 	-qVarCenters "0,0" \
 	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-resid	3Ts_residuals	\
 	-num_glt 9 \
 	-gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
 	-gltLabel 2 'social-academic' -gltCode  2 'domain : 1*social -1*academic' \

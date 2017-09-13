@@ -1,22 +1,36 @@
 ---
-title: "make_3dLME_models"
+title: "Make 3dLME data table"
 output: html_document
 ---
 
-This script takes first-level FX contrasts (each condition > rest) and age covariates to create the model input for the 3dLME model.
+This script takes first-level FX contrasts (each condition > rest) and age covariates to create the data table input for the 3dLME model.
 
-# load packages
+## load packages
 ```{r, message=FALSE, warning=FALSE}
 library(tidyverse)
+library(knitr)
 ```
 
-# load data
+## load data
 ```{r}
+# load fx file names
+fxCons = data.frame(file = list.files('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/')) 
+
+# print header
+fxCons %>%
+  head(6) %>%
+  kable(format = 'pandoc')
+
+# load age
 covariates = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv')
-fxCons = data.frame(file = list.files('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/'))
+
+# print header
+covariates %>%
+  head(6) %>%
+  kable(format = 'pandoc')
 ```
 
-# tidy data
+## tidy data
 ```{r}
 # center age and create quadratic term for age
 covariates = covariates %>%
@@ -26,14 +40,16 @@ covariates = covariates %>%
 
 # extract condition information from contrast files
 fxCons = fxCons %>%
-  extract(file, c("Subj","wavenum","con"), regex = "(s[0-9]{3})_t([0-3]{1})_(con_[0-4]{4}).nii", remove = FALSE) %>%
+  extract(file, c("Subj","wavenum","con"), 
+          regex = "(s[0-9]{3})_t([0-3]{1})_(con_[0-4]{4}).nii", 
+          remove = FALSE) %>%
   mutate(domain = ifelse(con %in% c("con_0001", "con_0003"), "academic", "social"),
          target = ifelse(con %in% c("con_0001", "con_0002"), "self", "other"),
-         InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file,' /'),
+         InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file),
          wavenum = as.integer(wavenum))
 ```
 
-# exclude subjects based on motion and number of timepoints
+## exclude subjects based on motion and number of timepoints
 ```{r}
 # exclude subjects based on motion
 motion.exclusions = c('s002_t1', 's004_t1', 's008_t1', 's011_t1', 's017_t1', 's026_t1', 's033_t2', 's034_t1', 's041_t1', 's044_t1', 's047_t1', 's051_t1', 's054_t1', 's057_t1', 's059_t1', 's061_t1', 's063_t1', 's070_t2', 's074_t1', 's074_t2', 's078_t1', 's084_t1', 's090_t2', 's090_t3', 's094_t1', 's094_t2', 's096_t1')
@@ -44,8 +60,8 @@ inclusions.3Ts = c('s005', 's016', 's018', 's019', 's022', 's023', 's024', 's029
 included.3Ts = fxCons %>% filter(grepl(paste(inclusions.3Ts, collapse="|"), Subj))
 ```
 
-# merge data
-```{r}
+## merge data
+```{r, warning=FALSE, message=FALSE}
 age.motion = left_join(included.motion, covariates, by = c("Subj", "wavenum")) %>%
   select(Subj, target, domain, starts_with("age_c"), InputFile) %>%
   filter(!is.na(age_c))
@@ -53,9 +69,14 @@ age.motion = left_join(included.motion, covariates, by = c("Subj", "wavenum")) %
 age.3Ts = left_join(included.3Ts, covariates, by = c("Subj", "wavenum")) %>%
   select(Subj, target, domain, starts_with("age_c"), InputFile) %>%
   filter(!is.na(age_c))
+
+# print header
+age.motion %>%
+  head(10) %>%
+  kable(format = 'pandoc')
 ```
 
-# write files
+## write files
 ```{r}
 write.table(age.motion, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_all.txt', sep = "\t", quote=FALSE, row.names = FALSE)
 write.table(age.3Ts, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_3Ts.txt', sep = "\t", quote=FALSE, row.names = FALSE)
