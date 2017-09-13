@@ -1,0 +1,211 @@
+---
+title: "Running AFNI 3dLME"
+author: "Dani Cosme"
+date: "9/12/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=6, warning=FALSE, message=FALSE)
+```
+
+# Make 3dLME data table
+AFNI requires file information be in a [particular format](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html). `functional-workshop/code/RX_comparison/AFNI/make_3dLME_dataTable.Rmd` is an example of a script that you could use to put your data into this format.
+
+
+```{r, child="/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/make_3dLME_dataTable.Rmd", eval=TRUE}
+
+```
+
+# Make 3dLME bash script
+To run the 3dLME model, you will need to create and execute a bash script in which your model is specified.
+
+Path to bash script: `functional-workshop/code/RX_comparison/AFNI/3dLME_all.sh`
+
+```{bash, eval=FALSE}
+#!/bin/bash
+. ~/.bashrc
+
+# Change directory to the model results folder
+cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+
+# Specify 3dLME model
+# AFNI documentation https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html
+# Every line in the model must be followed by '\'
+#	- prefix = model name
+#	- jobs = number of parallel processors
+#	- model = model formula
+#	- resid = residual file name 
+#	- ranEff = random effects, 1 = intercept
+#	- SS_type = sum of squares type, 3 = marginal
+#	- qVars = quantitative variables
+#	- qVars = centering values for quantitative variables
+#	- mask = binarized group-level mask
+#	- num_glt = number of contrasts (i.e. general linear tests)
+#	- gltLabel k = contrast label for contrast k
+#	- gltCode k = contrast code for contrast k
+#	- datatable = data structure with a header
+
+3dLME -prefix all \
+	-jobs 8 \
+	-model  "target*domain*age_c+target*domain*age_c2" \
+	-resid	all_residuals	\
+	-ranEff "~1+age_c" \
+	-SS_type 3 \
+	-qVars "age_c,age_c2" \
+	-qVarCenters "0,0" \
+	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-num_glt 9 \
+	-gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
+	-gltLabel 2 'social-academic' -gltCode  2 'domain : 1*social -1*academic' \
+	-gltLabel 3 'self-other.social-academic' -gltCode  3 'target : 1*self -1*other domain : 1*social -1*academic' \
+	-gltLabel 4 'social_self-other' -gltCode  4 'target : 1*self -1*other domain : 1*social' \
+	-gltLabel 5 'academic_self-other' -gltCode  5 'target : 1*self -1*other domain : 1*academic' \
+	-gltLabel 6 'age.self-other' -gltCode  6 'target : 1*self -1*other age_c : ' \
+	-gltLabel 7 'age2.self-other' -gltCode  7 'target : 1*self -1*other age_c2 : ' \
+	-gltLabel 8 'age.self-other.social-academic' -gltCode  8 'target : 1*self -1*other domain : 1*social -1*academic age_c : ' \
+	-gltLabel 9 'age2.self-other.social-academic' -gltCode  9 'target : 1*self -1*other domain : 1*social -1*academic age_c2 : ' \
+	-dataTable \
+	Subj	target	domain	age_c	age_c2	InputFile \
+	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+.
+.
+.
+	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \
+```
+
+## Specify model
+* prefix = model name
+* jobs = number of parallel processors
+* model = model formula
+* ranEff = random effects, 1 = intercept
+* SS_type = sum of squares type, 3 = marginal
+* qVars = quantitative variables
+* qVars = centering values for quantitative variables
+* mask = binarized group-level mask
+* resid = residual file name 
+
+```{bash, eval=FALSE}
+3dLME -prefix all \
+	-jobs 8 \
+	-model  "target*domain*age_c+target*domain*age_c2" \
+	-ranEff "~1+age_c" \
+	-SS_type 3 \
+	-qVars "age_c,age_c2" \
+	-qVarCenters "0,0" \
+	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-resid	all_residuals	\
+```
+
+## Specify contrasts (glts)
+* num_glt = number of contrasts (i.e. general linear tests)
+* gltLabel k = contrast label for contrast k
+* gltCode k = contrast code for contrast k
+
+```{bash, eval=FALSE}
+	-num_glt 9 \
+	-gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
+	-gltLabel 2 'social-academic' -gltCode  2 'domain : 1*social -1*academic' \
+	-gltLabel 3 'self-other.social-academic' -gltCode  3 'target : 1*self -1*other domain : 1*social -1*academic' \
+	-gltLabel 4 'social_self-other' -gltCode  4 'target : 1*self -1*other domain : 1*social' \
+	-gltLabel 5 'academic_self-other' -gltCode  5 'target : 1*self -1*other domain : 1*academic' \
+	-gltLabel 6 'age.self-other' -gltCode  6 'target : 1*self -1*other age_c : ' \
+	-gltLabel 7 'age2.self-other' -gltCode  7 'target : 1*self -1*other age_c2 : ' \
+	-gltLabel 8 'age.self-other.social-academic' -gltCode  8 'target : 1*self -1*other domain : 1*social -1*academic age_c : ' \
+	-gltLabel 9 'age2.self-other.social-academic' -gltCode  9 'target : 1*self -1*other domain : 1*social -1*academic age_c2 : ' \
+```
+
+## Specify data table (input files and design)
+* datatable = data structure with a header
+* format = subject, condition 1, condition 1, continuous variable 1, continuous variable 2, input file
+* Name requirements
+  * subject ID column must be named `Subj`
+  * file column must be named `InputFile`
+
+```{bash, eval=FALSE}
+	-dataTable \
+	Subj	target	domain	age_c	age_c2	InputFile \
+	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+.
+.
+.
+	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \
+```
+
+## Complete model
+```{bash, eval=FALSE}
+3dLME -prefix all \
+	-jobs 8 \
+	-model  "target*domain*age_c+target*domain*age_c2" \
+	-resid	all_residuals	\
+	-ranEff "~1+age_c" \
+	-SS_type 3 \
+	-qVars "age_c,age_c2" \
+	-qVarCenters "0,0" \
+	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-num_glt 9 \
+	-gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
+	-gltLabel 2 'social-academic' -gltCode  2 'domain : 1*social -1*academic' \
+	-gltLabel 3 'self-other.social-academic' -gltCode  3 'target : 1*self -1*other domain : 1*social -1*academic' \
+	-gltLabel 4 'social_self-other' -gltCode  4 'target : 1*self -1*other domain : 1*social' \
+	-gltLabel 5 'academic_self-other' -gltCode  5 'target : 1*self -1*other domain : 1*academic' \
+	-gltLabel 6 'age.self-other' -gltCode  6 'target : 1*self -1*other age_c : ' \
+	-gltLabel 7 'age2.self-other' -gltCode  7 'target : 1*self -1*other age_c2 : ' \
+	-gltLabel 8 'age.self-other.social-academic' -gltCode  8 'target : 1*self -1*other domain : 1*social -1*academic age_c : ' \
+	-gltLabel 9 'age2.self-other.social-academic' -gltCode  9 'target : 1*self -1*other domain : 1*social -1*academic age_c2 : ' \
+	-dataTable \
+	Subj	target	domain	age_c	age_c2	InputFile \
+	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+.
+.
+.
+	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \
+```
+
+# Run 3dLME model
+## Dependencies
+* AFNI must be installed. Follow the instructions in the [AFNI installation guide](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html)
+* IF you're running the script locally, make sure the path to AFNI is in your bash environment `~/.bashrc`; if not, export the path to your local version of AFNI using `export PATH=$PATH:/Users/danicosme/AFNI_17.0.12/`
+* If you're running it on an HPC clustster, make sure AFNI is loaded in the script; replace `. ~/.bashrc` with `module load afni` or similar
+* 3dLME runs using R. To ensure all required R packages are installed, execute this AFNI command: `sudo rPkgsInstall -pkgs ALL`
+
+## Run bash script
+1. In the terminal, navigate to the 3dLME bash script and list content
+```{bash, eval=TRUE}
+cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
+ls -l
+```
+
+2. 
+
+# Resources
+* [AFNI installation guide](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html)
+* [AFNI 3dLME help guide](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html)
+* [AFNI message board](https://afni.nimh.nih.gov/afni/community/board/)
