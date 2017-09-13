@@ -214,7 +214,7 @@ bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt
 #### 3. Wait a while for the model to finish running
 
 #### 4. Check output file
-```{bash, eval=FALSE}
+```{bash, eval=TRUE}
 more /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/logs/3dLME_all.txt
 ```
 
@@ -275,6 +275,7 @@ done
 ```
 
 # View nifti files in R
+[John Muschelli](https://github.com/muschellij2) has written a number of wrappers to do neuroimaging and visualization in R. He also co-teaches a [fabulous class on neurohacking in R](https://www.coursera.org/learn/neurohacking) through Coursera.
 ```{r, eval=FALSE}
 library(fslr)
 library(papayar)
