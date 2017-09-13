@@ -420,6 +420,8 @@ Specify data table (input files and design)
 -   Name requirements
 -   subject ID column must be named `Subj`
 -   file column must be named `InputFile`
+-   Beware of `NA` in your data table. It will not run if there are
+    missing continuous variables.
 
 <!-- -->
 
@@ -513,8 +515,8 @@ Run model
     ## -rwx------  1 danicosme  staff   1031 Sep  2 15:57 convert_AFNItoNIFTI.sh
     ## drwx------  1 danicosme  staff  16384 Sep 12 18:00 logs
     ## -rwx------  1 danicosme  staff   3087 Sep 12 16:23 make_3dLME_dataTable.Rmd
-    ## -rwx------  1 danicosme  staff  35810 Sep 12 18:45 model_3Ts.txt
-    ## -rwx------  1 danicosme  staff  73056 Sep 12 18:45 model_all.txt
+    ## -rwx------  1 danicosme  staff  35810 Sep 12 19:01 model_3Ts.txt
+    ## -rwx------  1 danicosme  staff  73056 Sep 12 19:01 model_all.txt
 
 #### 2. Change directories to the directory with `3dLME_all.sh` and execute the script. Pipe the output to `logs/3dLME_all.txt` and errors to `logs/3dLME_all_error.txt`
 

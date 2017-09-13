@@ -132,6 +132,7 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 * Name requirements
   * subject ID column must be named `Subj`
   * file column must be named `InputFile`
+* Beware of `NA` in your data table. It will not run if there are missing continuous variables.
 
 ```{bash, eval=FALSE}
 	-dataTable \
