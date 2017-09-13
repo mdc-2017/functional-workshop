@@ -2,7 +2,10 @@
 title: "Running AFNI 3dLME"
 author: "Dani Cosme"
 date: "9/12/2017"
-output: html_document
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -196,16 +199,95 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 * If you're running it on an HPC clustster, make sure AFNI is loaded in the script; replace `. ~/.bashrc` with `module load afni` or similar
 * 3dLME runs using R. To ensure all required R packages are installed, execute this AFNI command: `sudo rPkgsInstall -pkgs ALL`
 
-## Run bash script
-1. In the terminal, navigate to the 3dLME bash script and list content
+## Run model
+#### 1. In the terminal, the contents of the directory that holds that 3dLME bash script
 ```{bash, eval=TRUE}
-cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
-ls -l
+echo /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
+ls -l /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
 ```
 
-2. 
+#### 2. Change directories to the directory with `3dLME_all.sh` and execute the script. Pipe the output to `logs/3dLME_all.txt` and errors to `logs/3dLME_all_error.txt`
+```{bash, eval=FALSE}
+cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
+bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt
+```
 
-# Resources
+#### 3. Wait a while for the model to finish running
+
+#### 4. Check output file
+```{bash, eval=FALSE}
+more /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/logs/3dLME_all.txt
+```
+
+#### 5. Check results files in the output directory
+```{bash, eval=TRUE}
+ls -l /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+```
+
+# View results in AFNI
+#### 1. Open AFNI GUI
+```{bash, eval=FALSE}
+cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+afni&
+```
+
+#### 2. Select overlay by clicking on `Overlay` and choosing the model labeled `all`
+
+<img src="./select_overlay.png" width="750">
+
+#### 3. Select contrast by clicking on `Olay` and `Thr` and selecting `self-other Z` in each. 
+* Choosing the `Z` map will give the map of z-values, whereas the other map is the map of parameter estimates
+* `Thr` is the map that is used for thresholding.
+
+<img src="./select_subbrick.png" width="750">
+
+#### 4. Select the p-value by right-clicking on `p=`
+* If you have trouble entering values into the GUI, use `echo 'export DYLD_LIBRARY_PATH=/opt/X11/lib/flat_namespace' >> ~/.bashrc`
+
+<img src="./select_pvalue.png" width="750">
+
+#### 5. Select cluster forming threshold by clicking on `Clusterize`
+
+<img src="./select_k.png" width="750">
+
+# Convert AFNI files to nifti files
+Conversion script path: `/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/convert_AFNItoNIFTI.sh`
+```{bash, eval=FALSE}
+#!/bin/bash
+. ~/.bashrc
+
+# Define path to AFNI results directory, model names, and contrast numbers
+# ------------------------------------------------------------------------------------------
+resultsDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+thresholdedDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/thresholdedMaps
+models=(3Ts all)
+selfOther=13
+age_selfOther=23
+age2_selfOther=25
+
+# Convert AFNI contrasts to nifti files
+# ------------------------------------------------------------------------------------------
+# AFNI documentation https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dAFNItoNIFTI.html
+for model in  "${models[@]}" ; do
+	3dAFNItoNIFTI -prefix "${resultsDir}"/self-other_"${model}" "${resultsDir}"/"${model}"+tlrc["${selfOther}"]
+	3dAFNItoNIFTI -prefix "${resultsDir}"/age.self-other_"${model}" "${resultsDir}"/"${model}"+tlrc["${age_selfOther}"]
+	3dAFNItoNIFTI -prefix "${resultsDir}"/age2.self-other_"${model}" "${resultsDir}"/"${model}"+tlrc["${age2_selfOther}"]
+done
+```
+
+# View nifti files in R
+```{r, eval=FALSE}
+library(fslr)
+library(papayar)
+structural = readnii('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/MNI152_T1_1mm_brain.nii')
+contrast = readnii('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/self-other_all.nii')
+
+papaya(list(structural,contrast))
+```
+
+<img src="./papaya.png" width="750">
+
+# Helpful resources
 * [AFNI installation guide](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html)
 * [AFNI 3dLME help guide](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html)
 * [AFNI message board](https://afni.nimh.nih.gov/afni/community/board/)
