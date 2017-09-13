@@ -30,12 +30,19 @@
         -   [Interaction between target and
             domain](#interaction-between-target-and-domain-1)
 -   [Visualize predicted values from
-    model](#visualize-predicted-values-from-model)
+    model.1](#visualize-predicted-values-from-model.1)
     -   [Plot fitted curves for parcels 292 and
         116](#plot-fitted-curves-for-parcels-292-and-116-1)
         -   [Main effect of target](#main-effect-of-target-2)
         -   [Interaction between target and
             domain](#interaction-between-target-and-domain-2)
+-   [Visualize predicted values from
+    model.2](#visualize-predicted-values-from-model.2)
+    -   [Plot fitted curves for parcels 292 and
+        116](#plot-fitted-curves-for-parcels-292-and-116-2)
+        -   [Main effect of target](#main-effect-of-target-3)
+        -   [Interaction between target and
+            domain](#interaction-between-target-and-domain-3)
 
 ROIs from the [Craddock et al. (2012) parcellation atlas](http://ccraddock.github.io/cluster_roi/atlases.html)
 ==============================================================================================================
@@ -750,8 +757,67 @@ Plot LOESS curves for parcels 292 and 116
 
 ![](model_visualize_estimates_files/figure-markdown_strict/raw%20LOESS%20interaction-1.png)
 
-Visualize predicted values from model
-=====================================
+Visualize predicted values from model.1
+=======================================
+
+Linear effect of age, random intercepts only
+
+**model.1:** `beta ~ target * domain * age_c + (1 | subjectID)`
+
+Plot fitted curves for parcels 292 and 116
+------------------------------------------
+
+    # extract random effects formula from model.2 and reconstruct it to use with the `predict` function
+    REFormulaString = as.character(findbars(model.1@call$formula)[[1]])
+    REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], REFormulaString[[3]], ')'))
+
+    # get expected values for each observation based on model.2
+    data.complete$expected.1 <- predict(model.1, newdata = data.complete, re.form=REFormula)
+    data.complete$expected_mean.1 <- predict(model.1, newdata = data.complete, re.form=NA)
+
+### Main effect of target
+
+    ggplot(data.complete, aes(x = age, 
+                              y = expected.1, 
+                              group = interaction(subjectID, target, domain), 
+                              color = target)) +
+      geom_point(size = .5, alpha = .1) + 
+      geom_line(alpha = .1) + 
+      geom_line(aes(y = expected_mean.1, group=target), size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+      facet_wrap(~parcellation, ncol = 2) +
+      geom_hline(yintercept = 0, color = 'gray') +
+      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1])) +
+      scale_x_continuous(breaks=c(10,13,16)) +
+      coord_cartesian(ylim=c(-1,1)) +
+      theme_minimal(base_size = 18)
+
+![](model_visualize_estimates_files/figure-markdown_strict/predicted%20main%20effect%20model.1-1.png)
+
+### Interaction between target and domain
+
+    ggplot(data.complete, aes(x = age, 
+                              y = expected.1, 
+                              group = interaction(subjectID, target, domain), 
+                              color = target, 
+                              linetype = domain)) +
+      geom_point(size = .5, alpha = .1) + 
+      geom_line(alpha = .1) + 
+      geom_line(aes(y = expected_mean.1, group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+      facet_wrap(~parcellation, ncol = 2) +
+      geom_hline(yintercept = 0, color = 'gray')+
+      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+      scale_x_continuous(breaks=c(10,13,16)) +
+      coord_cartesian(ylim=c(-1,1)) +
+      theme_minimal(base_size = 18)
+
+![](model_visualize_estimates_files/figure-markdown_strict/predicted%20interaction%20model.1-1.png)
+
+Visualize predicted values from model.2
+=======================================
+
+Linear effect of age, random intercepts and age slopes
+
+**model.2:** `beta ~ target * domain * age_c + (1 + age_c | subjectID)`
 
 Plot fitted curves for parcels 292 and 116
 ------------------------------------------
@@ -761,32 +827,37 @@ Plot fitted curves for parcels 292 and 116
     REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], REFormulaString[[3]], ')'))
 
     # get expected values for each observation based on model.2
-    data.complete$expected <- predict(model.2, newdata = data.complete, re.form=REFormula)
-    data.complete$expected_mean <- predict(model.2, newdata = data.complete, re.form=NA)
+    data.complete$expected.2 <- predict(model.2, newdata = data.complete, re.form=REFormula)
+    data.complete$expected_mean.2 <- predict(model.2, newdata = data.complete, re.form=NA)
 
 ### Main effect of target
 
     ggplot(data.complete, aes(x = age, 
-                              y = expected_mean, 
+                              y = expected.2, 
+                              group = interaction(subjectID, target, domain), 
                               color = target)) +
-      geom_line(size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+      geom_point(size = .5, alpha = .1) + 
+      geom_line(alpha = .1) + 
+      geom_line(aes(y = expected_mean.2, group=target), size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
       facet_wrap(~parcellation, ncol = 2) +
-      geom_hline(yintercept = 0, color = 'gray')+
-      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
+      geom_hline(yintercept = 0, color = 'gray') +
+      scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1])) +
       scale_x_continuous(breaks=c(10,13,16)) +
       coord_cartesian(ylim=c(-1,1)) +
       theme_minimal(base_size = 18)
 
-![](model_visualize_estimates_files/figure-markdown_strict/predicted%20main%20effect-1.png)
+![](model_visualize_estimates_files/figure-markdown_strict/predicted%20main%20effect%20model.2-1.png)
 
 ### Interaction between target and domain
 
     ggplot(data.complete, aes(x = age, 
-                              y = expected_mean, 
-                              group = interaction(target, domain), 
+                              y = expected.2, 
+                              group = interaction(subjectID, target, domain), 
                               color = target, 
                               linetype = domain)) +
-      geom_line(size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
+      geom_point(size = .5, alpha = .1) + 
+      geom_line(alpha = .1) + 
+      geom_line(aes(y = expected_mean.2, group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
       facet_wrap(~parcellation, ncol = 2) +
       geom_hline(yintercept = 0, color = 'gray')+
       scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
@@ -794,4 +865,4 @@ Plot fitted curves for parcels 292 and 116
       coord_cartesian(ylim=c(-1,1)) +
       theme_minimal(base_size = 18)
 
-![](model_visualize_estimates_files/figure-markdown_strict/predicted%20interaction-1.png)
+![](model_visualize_estimates_files/figure-markdown_strict/predicted%20interaction%20model.2-1.png)
