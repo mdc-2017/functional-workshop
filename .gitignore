@@ -5,3 +5,4 @@
 *.HEAD
 *.gz
 *.html
+.Rproj.user
