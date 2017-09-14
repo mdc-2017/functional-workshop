@@ -125,10 +125,6 @@ The output will be saved in a text file
     library(dplyr)
     library(knitr)
 
-    getwd()
-
-    ## [1] "/Users/danicosme/Documents/code/dsnlab/functional-workshop/code/ROI_analysis"
-
     read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
       head(10) %>%
       kable(format = 'pandoc')
