@@ -4,7 +4,6 @@
 # Define path to AFNI results directory, model names, and contrast numbers
 # ------------------------------------------------------------------------------------------
 resultsDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
-thresholdedDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/thresholdedMaps
 models=(3Ts all)
 selfOther=13
 age_selfOther=23
