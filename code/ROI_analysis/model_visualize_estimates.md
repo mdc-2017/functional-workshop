@@ -49,7 +49,7 @@ ROIs from the [Craddock et al. (2012) parcellation atlas](http://ccraddock.githu
 
 Mean parameter estimates were extracted from parcel 292 and 116. The
 parcellation atlas can be found in
-\``functional-workshop/data/ROIs/craddock_all.nii.gz`. This atlas has
+`functional-workshop/data/ROIs/craddock_all.nii.gz`. This atlas has
 multiple volumes within the 4D file, and we extracted from the K=400
 atlas, which is the 31st volume in AFNI (index = 0 in AFNI).
 
@@ -235,17 +235,23 @@ Load packages
     # set mirror from which to download packages
     osuRepo = 'http://ftp.osuosl.org/pub/cran/'
 
-    if(!require(tidyverse)){
-      install.packages('tidyverse',repos=osuRepo)
+    if(!require(tidyr)){
+      install.packages('tidyr',repos=osuRepo)
+    }
+    if(!require(ggplot2)){
+      install.packages('ggplot2',repos=osuRepo)
     }
     if(!require(lme4)){
       install.packages('lme4',repos=osuRepo)
     }
     if(!require(lmerTest)){
       install.packages('lmerTest',repos=osuRepo)
-      }
+    }
     if(!require(wesanderson)){
       install.packages('wesanderson',repos=osuRepo)
+    }
+    if(!require(rmarkdown)){
+      install.packages('rmarkdown',repos=osuRepo)
       }
 
 Load data
