@@ -122,8 +122,12 @@ in your `~/.bashrc` file
 The output will be saved in a text file
 `functional-workshop/results/ROI_analysis/parameterEstimates.txt`
 
-    library(dplyr)
-    library(knitr)
+    if(!require(knitr)){
+      install.packages('knitr',repos=osuRepo)
+    }
+    if(!require(dplyr)){
+      install.packages('dplyr',repos=osuRepo)
+    }
 
     read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
       head(10) %>%
