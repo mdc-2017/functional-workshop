@@ -23,7 +23,7 @@ lapply(packages, library, character.only = TRUE)
 
 
 ##Fitting with lme with nlme for brain region "66"
-ICC_model.1 = lme(beta ~ wave, random=~1 | subjectID, data=filter(data.complete, parcellation == 66))
+ICC_model.1 = lme(beta ~ 1, random=~1 | subjectID, data=filter(data.complete, parcellation == 66))
 summary(ICC_model.1)
 
 ##See fixed effect and variance
@@ -36,7 +36,7 @@ ICC.1 <- varests[1]/sum(varests)
 ICC.1
 
 ##Fitting with lme with nlme for brain region "380"
-ICC_model.2 = lme(beta ~ wave, random=~1 | subjectID, data=filter(data.complete, parcellation == 380))
+ICC_model.2 = lme(beta ~ 1, random=~1 | subjectID, data=filter(data.complete, parcellation == 380))
 summary(ICC_model.2)
 
 ##See fixed effect and variance
