@@ -82,7 +82,6 @@ The output will be saved in a text file `functional-workshop/results/ROI_analysi
 library(dplyr)
 library(knitr)
 
-getwd()
 read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
   head(10) %>%
   kable(format = 'pandoc')
