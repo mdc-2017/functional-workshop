@@ -53,7 +53,7 @@ parcellation atlas can be found in
 multiple volumes within the 4D file, and we extracted from the K=400
 atlas, which is the 31st volume in AFNI (index = 0 in AFNI).
 
-<img src="./parcel_116_292_edited.png" width="750">
+<img src="parcel_116_292_edited.png" width="750">
 
 Extract mean parameter estimates
 ================================
@@ -64,6 +64,9 @@ AFNI `3dmaskave`.
 
 Path to bash script:
 `functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
+
+Dependencies: \* AFNI must be installed \* Path to AFNI script must be
+in your `~/.bashrc` file
 
     #!/bin/bash
     . ~/.bashrc
@@ -76,13 +79,13 @@ Path to bash script:
     # ------------------------------------------------------------------------------------------
     # paths
 
-    con_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models' #fx contrast directory
-    atlas_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/ROIs' #roi/parcellation atlas directory 
-    output_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis' #roi/parcellation output directory
-    rx_model='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/all+tlrc' #rx model (for atlas alignment only)
+    con_dir='./data/FX_models' #fx contrast directory
+    atlas_dir='./data/ROIs' #roi/parcellation atlas directory 
+    output_dir='./results/ROI_analysis' #roi/parcellation output directory
+    rx_model='./results/AFNI/all+tlrc' #rx model (for atlas alignment only)
 
     # variables
-    subjects=`cat /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/subject_list.txt`
+    subjects=`cat ./data/subject_list.txt`
     parcellation_atlas=(craddock_all.nii.gz) #roi/parcellation atlas file
     parcellation_map=(31) #parcellation map number (if applicable)
     aligned_parcellation_map=(aligned_craddock_400) #aligned roi/parcellation map name
@@ -90,27 +93,31 @@ Path to bash script:
     waves=(t1 t2 t3) #waves or task names
     fx_cons=(con_0001 con_0002 con_0003 con_0004) #fx con files to extract from
 
-    # Align roi/parcellation map to data
-    # ------------------------------------------------------------------------------------------
-    echo "aligning parcellation map"
-    if [ -f $atlas_dir/${aligned_parcellation_map}+tlrc.BRIK ]; then
-        echo "aligned parcellation map already exists"
-    else 
-    3dAllineate -source $atlas_dir/$parcellation_atlas[$parcellation_map] -master $rx_model -final NN -1Dparam_apply '1D: 12@0'\' -prefix $atlas_dir/$aligned_parcellation_map
-    fi
+    if [ ! -f $output_dir/parameterEstimates.txt ]; then
+        # Align roi/parcellation map to data
+        # ------------------------------------------------------------------------------------------
+        echo "aligning parcellation map"
+        if [ -f $atlas_dir/${aligned_parcellation_map}+tlrc.BRIK ]; then
+            echo "aligned parcellation map already exists"
+        else 
+        3dAllineate -source $atlas_dir/$parcellation_atlas[$parcellation_map] -master $rx_model -final NN -1Dparam_apply '1D: 12@0'\' -prefix $atlas_dir/$aligned_parcellation_map
+        fi
 
-    # Extract mean parameter estimates and SDs for each subject, wave, contrast, and roi/parcel
-    # ------------------------------------------------------------------------------------------
+        # Extract mean parameter estimates and SDs for each subject, wave, contrast, and roi/parcel
+        # ------------------------------------------------------------------------------------------
 
-    for sub in ${subjects[@]}; do 
-        for wave in ${waves[@]}; do 
-            for con in ${fx_cons[@]}; do 
-                for num in ${aligned_parcellation_num[@]}; do 
-                    echo ${sub} ${wave} ${con} ${num} `3dmaskave -sigma -quiet -mrange $num $num -mask $atlas_dir/${aligned_parcellation_map}+tlrc $con_dir/${sub}_${wave}_${con}.nii` >> $output_dir/parameterEstimates.txt
+        for sub in ${subjects[@]}; do 
+            for wave in ${waves[@]}; do 
+                for con in ${fx_cons[@]}; do 
+                    for num in ${aligned_parcellation_num[@]}; do 
+                        echo ${sub} ${wave} ${con} ${num} `3dmaskave -sigma -quiet -mrange $num $num -mask $atlas_dir/${aligned_parcellation_map}+tlrc $con_dir/${sub}_${wave}_${con}.nii` >> $output_dir/parameterEstimates.txt
+                    done
                 done
             done
         done
-    done
+    else
+        echo "parameterEstimates.txt already exists"
+    fi
 
 The output will be saved in a text file
 `functional-workshop/results/ROI_analysis/parameterEstimates.txt`
@@ -118,7 +125,11 @@ The output will be saved in a text file
     library(dplyr)
     library(knitr)
 
-    read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
+    getwd()
+
+    ## [1] "/Users/danicosme/Documents/code/dsnlab/functional-workshop/code/ROI_analysis"
+
+    read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
       head(10) %>%
       kable(format = 'pandoc')
 
@@ -220,19 +231,30 @@ The output will be saved in a text file
 Load packages
 =============
 
-    library(tidyverse)
-    library(lme4)
-    library(lmerTest)
-    library(wesanderson)
+    # set mirror from which to download packages
+    osuRepo = 'http://ftp.osuosl.org/pub/cran/'
+
+    if(!require(tidyverse)){
+      install.packages('tidyverse',repos=osuRepo)
+    }
+    if(!require(lme4)){
+      install.packages('lme4',repos=osuRepo)
+    }
+    if(!require(lmerTest)){
+      install.packages('lmerTest',repos=osuRepo)
+      }
+    if(!require(wesanderson)){
+      install.packages('wesanderson',repos=osuRepo)
+      }
 
 Load data
 =========
 
     # load parameter estimate .csv file
-    data = read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
+    data = read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
 
     # load age covariates and rename variables
-    age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
+    age = read.csv('../../data/covariates/age.csv') %>%
       rename("subjectID" = Subj,
              "wave" = wavenum)
 

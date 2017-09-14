@@ -14,13 +14,16 @@ knitr::opts_chunk$set(fig.width=8, fig.height=6, warning=FALSE, message=FALSE)
 # ROIs from the [Craddock et al. (2012) parcellation atlas](http://ccraddock.github.io/cluster_roi/atlases.html)
 Mean parameter estimates were extracted from parcel 292 and 116. The parcellation atlas can be found in ``functional-workshop/data/ROIs/craddock_all.nii.gz`. This atlas has multiple volumes within the 4D file, and we extracted from the K=400 atlas, which is the 31st volume in AFNI (index = 0 in AFNI).
 
-<img src="./parcel_116_292_edited.png" width="750">
+<img src="parcel_116_292_edited.png" width="750">
 
 # Extract mean parameter estimates
 Run bash script to calculate mean parameter estimates for each subject, wave, and condition contrast (condition > rest) within each ROI using AFNI `3dmaskave`.
 
 Path to bash script: `functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
 
+Dependencies:
+* AFNI must be installed
+* Path to AFNI script must be in your `~/.bashrc` file
 ```{bash, eval=FALSE}
 #!/bin/bash
 . ~/.bashrc
@@ -33,13 +36,13 @@ Path to bash script: `functional-workshop/code/ROI_analysis/extract_parameterEst
 # ------------------------------------------------------------------------------------------
 # paths
 
-con_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models' #fx contrast directory
-atlas_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/ROIs' #roi/parcellation atlas directory 
-output_dir='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis' #roi/parcellation output directory
-rx_model='/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/all+tlrc' #rx model (for atlas alignment only)
+con_dir='./data/FX_models' #fx contrast directory
+atlas_dir='./data/ROIs' #roi/parcellation atlas directory 
+output_dir='./results/ROI_analysis' #roi/parcellation output directory
+rx_model='./results/AFNI/all+tlrc' #rx model (for atlas alignment only)
 
 # variables
-subjects=`cat /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/subject_list.txt`
+subjects=`cat ./data/subject_list.txt`
 parcellation_atlas=(craddock_all.nii.gz) #roi/parcellation atlas file
 parcellation_map=(31) #parcellation map number (if applicable)
 aligned_parcellation_map=(aligned_craddock_400) #aligned roi/parcellation map name
@@ -79,7 +82,8 @@ The output will be saved in a text file `functional-workshop/results/ROI_analysi
 library(dplyr)
 library(knitr)
 
-read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
+getwd()
+read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
   head(10) %>%
   kable(format = 'pandoc')
 ```
@@ -106,10 +110,10 @@ if(!require(wesanderson)){
 # Load data
 ```{r, load data}
 # load parameter estimate .csv file
-data = read.table('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
+data = read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
 
 # load age covariates and rename variables
-age = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv') %>%
+age = read.csv('../../data/covariates/age.csv') %>%
   rename("subjectID" = Subj,
          "wave" = wavenum)
 ```
