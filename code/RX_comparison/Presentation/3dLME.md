@@ -510,11 +510,9 @@ Run model
 #### 1. In the terminal, the contents of the directory that holds that 3dLME bash script
 
     pwd
-    echo ../AFNI
     ls -l ../AFNI
 
     ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
-    ## ../AFNI
     ## total 464
     ## -rw-r--r--  1 danicosme  staff  38616 Sep 13 13:34 3dLME_3Ts.sh
     ## -rw-r--r--  1 danicosme  staff  76690 Sep 13 13:34 3dLME_all.sh
@@ -534,12 +532,17 @@ Run model
 
 #### 4. Check output file
 
+    pwd
     more ../AFNI/logs/3dLME_all.txt
+
+    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
 
 #### 5. Check results files in the output directory
 
+    pwd
     ls -l ../../../results/AFNI
 
+    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
     ## total 48848
     ## -rw-r--r--  1 danicosme  staff      3782 Sep 13 13:34 3dFWHMx.1D
     ## -rw-r--r--  1 danicosme  staff     17118 Sep 13 13:34 3dFWHMx.1D.png
@@ -572,11 +575,11 @@ View results in AFNI
 -   If you have trouble entering values into the GUI, use
     `echo 'export DYLD_LIBRARY_PATH=/opt/X11/lib/flat_namespace' >> ~/.bashrc`
 
-<img src="./code/RX_comparison/Presentation/select_pvalue.png" width="750">
+<img src="./select_pvalue.png" width="750">
 
 #### 5. Select cluster forming threshold by clicking on `Clusterize`
 
-<img src="./code/RX_comparison/Presentation/select_k.png" width="750">
+<img src="./select_k.png" width="750">
 
 Convert AFNI files to nifti files
 =================================
@@ -625,7 +628,7 @@ R](https://www.coursera.org/learn/neurohacking) through Coursera.
 
     papaya(list(structural,contrast))
 
-<img src="./code/RX_comparison/Presentation/papaya.png" width="750">
+<img src="./papaya.png" width="750">
 
 Helpful resources
 =================

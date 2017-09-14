@@ -204,7 +204,6 @@ cd ./results/AFNI
 #### 1. In the terminal, the contents of the directory that holds that 3dLME bash script
 ```{bash, eval=TRUE}
 pwd
-echo ../AFNI
 ls -l ../AFNI
 ```
 
@@ -219,11 +218,13 @@ bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt
 
 #### 4. Check output file
 ```{bash, eval=TRUE}
+pwd
 more ../AFNI/logs/3dLME_all.txt
 ```
 
 #### 5. Check results files in the output directory
 ```{bash, eval=TRUE}
+pwd
 ls -l ../../../results/AFNI
 ```
 
@@ -247,11 +248,11 @@ afni&
 #### 4. Select the p-value by right-clicking on `p=`
 * If you have trouble entering values into the GUI, use `echo 'export DYLD_LIBRARY_PATH=/opt/X11/lib/flat_namespace' >> ~/.bashrc`
 
-<img src="./code/RX_comparison/Presentation/select_pvalue.png" width="750">
+<img src="./select_pvalue.png" width="750">
 
 #### 5. Select cluster forming threshold by clicking on `Clusterize`
 
-<img src="./code/RX_comparison/Presentation/select_k.png" width="750">
+<img src="./select_k.png" width="750">
 
 # Convert AFNI files to nifti files
 Conversion script path: `functional-workshop/code/RX_comparison/AFNI/convert_AFNItoNIFTI.sh`
@@ -294,7 +295,7 @@ contrast = readnii('./results/AFNI/self-other_all.nii')
 papaya(list(structural,contrast))
 ```
 
-<img src="./code/RX_comparison/Presentation/papaya.png" width="750">
+<img src="./papaya.png" width="750">
 
 # Helpful resources
 * [AFNI installation guide](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html)
