@@ -88,7 +88,7 @@ if(!require(dplyr)){
 
 read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
   head(10) %>%
-  kable(format = 'pandoc')
+  kable(format = 'pandoc', digits = 2)
 ```
 
 # Load packages
@@ -159,7 +159,7 @@ merged = left_join(data1, age, by = c('subjectID', 'wave')) %>%
 # print data frame header
 merged %>%
   head(16) %>%
-  kable(format = 'pandoc')
+  kable(format = 'pandoc', digits = 2)
 ```
 
 # Remove missing data to run LME models
@@ -195,7 +195,7 @@ summary(model.2)
 ```{r, compare models}
 anova(model.1, model.2) %>%
   `row.names<-`(c('model.1', 'model.2')) %>%
-  kable()
+  kable(digits = 2)
 ```
 
 Adding age as a random effect does not significantly improve the model fit.  
