@@ -21,9 +21,9 @@ Run bash script to calculate mean parameter estimates for each subject, wave, an
 
 Path to bash script: `functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
 
-Dependencies:
-* AFNI must be installed
-* Path to AFNI script must be in your `~/.bashrc` file
+Dependencies:  
+* AFNI must be installed  
+* Path to AFNI script must be in your `~/.bashrc` file  
 ```{bash, eval=FALSE}
 #!/bin/bash
 . ~/.bashrc

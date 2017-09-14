@@ -65,8 +65,9 @@ AFNI `3dmaskave`.
 Path to bash script:
 `functional-workshop/code/ROI_analysis/extract_parameterEstimates.sh`
 
-Dependencies: \* AFNI must be installed \* Path to AFNI script must be
-in your `~/.bashrc` file
+Dependencies:  
+\* AFNI must be installed  
+\* Path to AFNI script must be in your `~/.bashrc` file
 
     #!/bin/bash
     . ~/.bashrc
