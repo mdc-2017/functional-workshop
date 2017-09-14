@@ -616,7 +616,6 @@ wrappers to do neuroimaging and visualization in R. He also co-teaches a
 [fabulous class on neurohacking in
 R](https://www.coursera.org/learn/neurohacking) through Coursera.
 
-    getwd()
     if(!require(fslr)){
       install.packages('fslr',repos=osuRepo)
     }

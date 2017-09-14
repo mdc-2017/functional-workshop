@@ -282,7 +282,6 @@ done
 # View nifti files in R
 [John Muschelli](https://github.com/muschellij2) has written a number of wrappers to do neuroimaging and visualization in R. He also co-teaches a [fabulous class on neurohacking in R](https://www.coursera.org/learn/neurohacking) through Coursera.
 ```{r, eval=FALSE}
-getwd()
 if(!require(fslr)){
   install.packages('fslr',repos=osuRepo)
 }
