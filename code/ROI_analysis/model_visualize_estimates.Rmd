@@ -163,7 +163,7 @@ data.complete = merged %>%
 
 # print number of rows
 cat('raw data: ', nrow(merged))
-cat('complete data: ', nrow(data.complete))
+cat('\ncomplete data: ', nrow(data.complete))
 ```
 
 # Run LME models within parcel 292 and compare 

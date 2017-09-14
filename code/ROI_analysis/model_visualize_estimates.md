@@ -517,8 +517,9 @@ Remove missing data to run LME models
 
     ## raw data:  1944
 
-    cat('complete data: ', nrow(data.complete))
+    cat('\ncomplete data: ', nrow(data.complete))
 
+    ## 
     ## complete data:  1296
 
 Run LME models within parcel 292 and compare
