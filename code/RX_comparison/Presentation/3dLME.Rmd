@@ -15,8 +15,7 @@ knitr::opts_chunk$set(fig.width=8, fig.height=6, warning=FALSE, message=FALSE)
 AFNI requires file information be in a [particular format](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html). `functional-workshop/code/RX_comparison/AFNI/make_3dLME_dataTable.Rmd` is an example of a script that you could use to put your data into this format.
 
 
-```{r, child="/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/make_3dLME_dataTable.Rmd", eval=TRUE}
-
+```{r, child="../AFNI/make_3dLME_dataTable.Rmd", eval=TRUE}
 ```
 
 # Make 3dLME bash script
@@ -24,12 +23,14 @@ To run the 3dLME model, you will need to create and execute a bash script in whi
 
 Path to bash script: `functional-workshop/code/RX_comparison/AFNI/3dLME_all.sh`
 
+If you're running this script locally, don't execute the bash chunks for this bit or your computer will try to run the code. They're just here so that we can take a look at the code.
+
 ```{bash, eval=FALSE}
 #!/bin/bash
 . ~/.bashrc
 
 # Change directory to the model results folder
-cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+cd ./results/AFNI
 
 # Specify 3dLME model
 # AFNI documentation https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html
@@ -56,7 +57,7 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	-SS_type 3 \
 	-qVars "age_c,age_c2" \
 	-qVarCenters "0,0" \
-	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-mask ./data/RX_mask/groupAverage_opt.nii \
 	-num_glt 9 \
 	-gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
 	-gltLabel 2 'social-academic' -gltCode  2 'domain : 1*social -1*academic' \
@@ -69,20 +70,20 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	-gltLabel 9 'age2.self-other.social-academic' -gltCode  9 'target : 1*self -1*other domain : 1*social -1*academic age_c2 : ' \
 	-dataTable \
 	Subj	target	domain	age_c	age_c2	InputFile \
-	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
-	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
-	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
-	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
-	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
-	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
-	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
-	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
-	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
-	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+	s001	self	academic	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	./data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	./data/FX_models/s003_t1_con_0002.nii \
 .
 .
 .
-	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \
+	s096	other	social	-0.12804102	0.0163945028026403	./data/FX_models/s096_t2_con_0004.nii \
 ```
 
 ## Specify model
@@ -104,7 +105,7 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	-SS_type 3 \
 	-qVars "age_c,age_c2" \
 	-qVarCenters "0,0" \
-	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-mask ./data/RX_mask/groupAverage_opt.nii \
 	-resid	all_residuals	\
 ```
 
@@ -137,20 +138,20 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 ```{bash, eval=FALSE}
 	-dataTable \
 	Subj	target	domain	age_c	age_c2	InputFile \
-	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
-	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
-	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
-	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
-	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
-	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
-	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
-	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
-	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
-	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+	s001	self	academic	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	./data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	./data/FX_models/s003_t1_con_0002.nii \
 .
 .
 .
-	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \
+	s096	other	social	-0.12804102	0.0163945028026403	./data/FX_models/s096_t2_con_0004.nii \
 ```
 
 ## Complete model
@@ -163,7 +164,7 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	-SS_type 3 \
 	-qVars "age_c,age_c2" \
 	-qVarCenters "0,0" \
-	-mask /Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/RX_mask/groupAverage_opt.nii \
+	-mask ./data/RX_mask/groupAverage_opt.nii \
 	-num_glt 9 \
 	-gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
 	-gltLabel 2 'social-academic' -gltCode  2 'domain : 1*social -1*academic' \
@@ -176,20 +177,20 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 	-gltLabel 9 'age2.self-other.social-academic' -gltCode  9 'target : 1*self -1*other domain : 1*social -1*academic age_c2 : ' \
 	-dataTable \
 	Subj	target	domain	age_c	age_c2	InputFile \
-	s001	self	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0001.nii \
-	s001	self	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0002.nii \
-	s001	other	academic	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0003.nii \
-	s001	other	social	-2.58469945	6.6806712468303	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t1_con_0004.nii \
-	s001	self	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0001.nii \
-	s001	self	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0002.nii \
-	s001	other	academic	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0003.nii \
-	s001	other	social	0.48767123	0.237823228569713	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s001_t2_con_0004.nii \
-	s003	self	academic	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0001.nii \
-	s003	self	social	-2.46174863	6.06020631730688	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s003_t1_con_0002.nii \
+	s001	self	academic	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0001.nii \
+	s001	self	social	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0002.nii \
+	s001	other	academic	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0003.nii \
+	s001	other	social	-2.58469945	6.6806712468303	./data/FX_models/s001_t1_con_0004.nii \
+	s001	self	academic	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0001.nii \
+	s001	self	social	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0002.nii \
+	s001	other	academic	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0003.nii \
+	s001	other	social	0.48767123	0.237823228569713	./data/FX_models/s001_t2_con_0004.nii \
+	s003	self	academic	-2.46174863	6.06020631730688	./data/FX_models/s003_t1_con_0001.nii \
+	s003	self	social	-2.46174863	6.06020631730688	./data/FX_models/s003_t1_con_0002.nii \
 .
 .
 .
-	s096	other	social	-0.12804102	0.0163945028026403	/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/s096_t2_con_0004.nii \
+	s096	other	social	-0.12804102	0.0163945028026403	./data/FX_models/s096_t2_con_0004.nii \
 ```
 
 # Run 3dLME model
@@ -202,13 +203,15 @@ cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 ## Run model
 #### 1. In the terminal, the contents of the directory that holds that 3dLME bash script
 ```{bash, eval=TRUE}
-echo /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
-ls -l /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
+pwd
+echo ../AFNI
+ls -l ../AFNI
 ```
 
 #### 2. Change directories to the directory with `3dLME_all.sh` and execute the script. Pipe the output to `logs/3dLME_all.txt` and errors to `logs/3dLME_all_error.txt`
 ```{bash, eval=FALSE}
-cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI
+pwd
+cd ./code/RX_comparison/AFNI
 bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt
 ```
 
@@ -216,18 +219,18 @@ bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt
 
 #### 4. Check output file
 ```{bash, eval=TRUE}
-more /Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/logs/3dLME_all.txt
+more ../AFNI/logs/3dLME_all.txt
 ```
 
 #### 5. Check results files in the output directory
 ```{bash, eval=TRUE}
-ls -l /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+ls -l ../../../results/AFNI
 ```
 
 # View results in AFNI
 #### 1. Open AFNI GUI
 ```{bash, eval=FALSE}
-cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
+cd ../../../results/AFNI
 afni&
 ```
 
@@ -244,22 +247,22 @@ afni&
 #### 4. Select the p-value by right-clicking on `p=`
 * If you have trouble entering values into the GUI, use `echo 'export DYLD_LIBRARY_PATH=/opt/X11/lib/flat_namespace' >> ~/.bashrc`
 
-<img src="./select_pvalue.png" width="750">
+<img src="./code/RX_comparison/Presentation/select_pvalue.png" width="750">
 
 #### 5. Select cluster forming threshold by clicking on `Clusterize`
 
-<img src="./select_k.png" width="750">
+<img src="./code/RX_comparison/Presentation/select_k.png" width="750">
 
 # Convert AFNI files to nifti files
-Conversion script path: `/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/convert_AFNItoNIFTI.sh`
+Conversion script path: `functional-workshop/code/RX_comparison/AFNI/convert_AFNItoNIFTI.sh`
 ```{bash, eval=FALSE}
 #!/bin/bash
 . ~/.bashrc
 
 # Define path to AFNI results directory, model names, and contrast numbers
 # ------------------------------------------------------------------------------------------
-resultsDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
-thresholdedDir=/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/thresholdedMaps
+resultsDir=./results/AFNI
+thresholdedDir=./results/thresholdedMaps
 models=(3Ts all)
 selfOther=13
 age_selfOther=23
@@ -278,15 +281,20 @@ done
 # View nifti files in R
 [John Muschelli](https://github.com/muschellij2) has written a number of wrappers to do neuroimaging and visualization in R. He also co-teaches a [fabulous class on neurohacking in R](https://www.coursera.org/learn/neurohacking) through Coursera.
 ```{r, eval=FALSE}
-library(fslr)
-library(papayar)
-structural = readnii('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/MNI152_T1_1mm_brain.nii')
-contrast = readnii('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI/self-other_all.nii')
+getwd()
+if(!require(fslr)){
+  install.packages('fslr',repos=osuRepo)
+}
+if(!require(papayar)){
+  install.packages('papayar',repos=osuRepo)
+}
+structural = readnii('./results/AFNI/MNI152_T1_1mm_brain.nii')
+contrast = readnii('./results/AFNI/self-other_all.nii')
 
 papaya(list(structural,contrast))
 ```
 
-<img src="./papaya.png" width="750">
+<img src="./code/RX_comparison/Presentation/papaya.png" width="750">
 
 # Helpful resources
 * [AFNI installation guide](https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/install_instructs/index.html)

@@ -79,8 +79,12 @@ fi
 
 The output will be saved in a text file `functional-workshop/results/ROI_analysis/parameterEstimates.txt`
 ```{r}
-library(dplyr)
-library(knitr)
+if(!require(knitr)){
+  install.packages('knitr',repos=osuRepo)
+}
+if(!require(dplyr)){
+  install.packages('dplyr',repos=osuRepo)
+}
 
 read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE) %>%
   head(10) %>%
