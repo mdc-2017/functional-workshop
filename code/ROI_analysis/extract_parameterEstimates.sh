@@ -23,24 +23,28 @@ aligned_parcellation_num=(116 292) #parcellation number(s) to extract from; use 
 waves=(t1 t2 t3) #waves or task names
 fx_cons=(con_0001 con_0002 con_0003 con_0004) #fx con files to extract from
 
-# Align roi/parcellation map to data
-# ------------------------------------------------------------------------------------------
-echo "aligning parcellation map"
-if [ -f $atlas_dir/${aligned_parcellation_map}+tlrc.BRIK ]; then
-	echo "aligned parcellation map already exists"
-else 
-3dAllineate -source $atlas_dir/$parcellation_atlas[$parcellation_map] -master $rx_model -final NN -1Dparam_apply '1D: 12@0'\' -prefix $atlas_dir/$aligned_parcellation_map
-fi
+if [ ! -f $output_dir/parameterEstimates.txt ]; then
+	# Align roi/parcellation map to data
+	# ------------------------------------------------------------------------------------------
+	echo "aligning parcellation map"
+	if [ -f $atlas_dir/${aligned_parcellation_map}+tlrc.BRIK ]; then
+		echo "aligned parcellation map already exists"
+	else 
+	3dAllineate -source $atlas_dir/$parcellation_atlas[$parcellation_map] -master $rx_model -final NN -1Dparam_apply '1D: 12@0'\' -prefix $atlas_dir/$aligned_parcellation_map
+	fi
 
-# Extract mean parameter estimates and SDs for each subject, wave, contrast, and roi/parcel
-# ------------------------------------------------------------------------------------------
+	# Extract mean parameter estimates and SDs for each subject, wave, contrast, and roi/parcel
+	# ------------------------------------------------------------------------------------------
 
-for sub in ${subjects[@]}; do 
-	for wave in ${waves[@]}; do 
-		for con in ${fx_cons[@]}; do 
-			for num in ${aligned_parcellation_num[@]}; do 
-				echo ${sub} ${wave} ${con} ${num} `3dmaskave -sigma -quiet -mrange $num $num -mask $atlas_dir/${aligned_parcellation_map}+tlrc $con_dir/${sub}_${wave}_${con}.nii` >> $output_dir/parameterEstimates.txt
+	for sub in ${subjects[@]}; do 
+		for wave in ${waves[@]}; do 
+			for con in ${fx_cons[@]}; do 
+				for num in ${aligned_parcellation_num[@]}; do 
+					echo ${sub} ${wave} ${con} ${num} `3dmaskave -sigma -quiet -mrange $num $num -mask $atlas_dir/${aligned_parcellation_map}+tlrc $con_dir/${sub}_${wave}_${con}.nii` >> $output_dir/parameterEstimates.txt
+				done
 			done
 		done
 	done
-done
+else
+	echo "parameterEstimates.txt already exists"
+fi
