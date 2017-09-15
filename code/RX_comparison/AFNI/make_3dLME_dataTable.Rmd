@@ -13,16 +13,17 @@ library(knitr)
 
 ## load data
 ```{r}
-# load fx file names
-fxCons = data.frame(file = list.files('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/')) 
-
+# load csv file with fx con file names
+#fxCons = data.frame(file = list.files('./data/FX_models/')) # get file names from contrast .nii files
+fxCons = read.csv('../../../data/FX_models/fxCons.csv')
+  
 # print header
 fxCons %>%
   head(6) %>%
   kable(format = 'pandoc')
 
 # load age
-covariates = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv')
+covariates = read.csv('../../../data/covariates/age.csv')
 
 # print header
 covariates %>%
@@ -45,7 +46,7 @@ fxCons = fxCons %>%
           remove = FALSE) %>%
   mutate(domain = ifelse(con %in% c("con_0001", "con_0003"), "academic", "social"),
          target = ifelse(con %in% c("con_0001", "con_0002"), "self", "other"),
-         InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file),
+         InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file), # CHANGE THIS PATH
          wavenum = as.integer(wavenum))
 ```
 
@@ -78,6 +79,6 @@ age.motion %>%
 
 ## write files
 ```{r}
-write.table(age.motion, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_all.txt', sep = "\t", quote=FALSE, row.names = FALSE)
-write.table(age.3Ts, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_3Ts.txt', sep = "\t", quote=FALSE, row.names = FALSE)
+write.table(age.motion, '../../../code/RX_comparison/AFNI/model_all.txt', sep = "\t", quote=FALSE, row.names = FALSE)
+write.table(age.3Ts, '../AFNI/model_3Ts.txt', sep = "\t", quote=FALSE, row.names = FALSE)
 ```
