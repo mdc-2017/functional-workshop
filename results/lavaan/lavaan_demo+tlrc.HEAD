@@ -1,0 +1,114 @@
+
+type = integer-attribute
+name = DATASET_RANK
+count = 2
+  3  14  
+
+type = integer-attribute
+name = DATASET_DIMENSIONS
+count = 5
+  64  76  64  0  0  
+
+type = string-attribute
+name = TYPESTRING
+count = 15
+'3DIM_HEAD_FUNC~
+
+type = integer-attribute
+name = SCENE_DATA
+count = 8
+  2  11  1  -999  -999  
+  -999  -999  -999  
+
+type = integer-attribute
+name = ORIENT_SPECIFIC
+count = 3
+  1  2  4  
+
+type = float-attribute
+name = ORIGIN
+count = 3
+  94.5  130.5  -76.5  
+
+type = float-attribute
+name = DELTA
+count = 3
+  -3  -3  3  
+
+type = integer-attribute
+name = TAXIS_NUMS
+count = 2
+  14  0  
+
+type = string-attribute
+name = IDCODE_STRING
+count = 12
+'lavaan_demo~
+
+type = string-attribute
+name = IDCODE_DATE
+count = 25
+'Fri Oct  2 15:46:02 2015~
+
+type = string-attribute
+name = BYTEORDER_STRING
+count = 10
+'LSB_FIRST~
+
+type = float-attribute
+name = BRICK_STATS
+count = 38
+  0  50.50041  -14.46277  16.67193  -7.491207  
+  7.847671  0  61.58589  -16.12593  15.68745  
+  -8.331858  7.477364  0  69.41978  -14.70426  
+  24.07528  -7.795231  11.04264  0  121.9398  
+  -19.39645  27.22434  -8.582171  10.7239  0  
+  115.0021  -12.36655  12.78765  -6.350946  5.389766  
+  0  40.33449  -16.2306  13.74881  -5.805535  
+  5.723423  0  33.70427  
+
+type = integer-attribute
+name = BRICK_TYPES
+count = 14
+  3  3  3  3  3  
+  3  3  3  3  3  
+  3  3  3  3  
+
+type = float-attribute
+name = BRICK_FLOAT_FACS
+count = 14
+  0  0  0  0  0  
+  0  0  0  0  0  
+  0  0  0  0  
+
+type = string-attribute
+name = BRICK_LABS
+count = 108
+'i..i_est~i..i_z~i.1_est~i.1_z~i.female_est~i.female_z~s..s_est~s..s_z~s.1_est~s.1_z~chisq~pvalue~rmsea~srmr~
+
+type = float-attribute
+name = BRICK_STATAUX
+count = 15
+  1  5  0  3  5  
+  0  5  5  0  7  
+  5  0  9  5  0  
+
+type = string-attribute
+name = HISTORY_NOTE
+count = 1
+'~
+
+type = string-attribute
+name = LABEL_1
+count = 5
+'zyxt~
+
+type = string-attribute
+name = LABEL_2
+count = 5
+'zyxt~
+
+type = string-attribute
+name = DATASET_NAME
+count = 5
+'zyxt~
