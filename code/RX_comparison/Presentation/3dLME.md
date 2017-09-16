@@ -59,15 +59,26 @@ and age covariates to create the data table input for the 3dLME model.
 load packages
 -------------
 
-    library(tidyverse)
-    library(knitr)
+    # set mirror from which to download packages
+    osuRepo = 'http://ftp.osuosl.org/pub/cran/'
+
+    if(!require(knitr)){
+      install.packages('knitr',repos=osuRepo)
+    }
+    if(!require(dplyr)){
+      install.packages('dplyr',repos=osuRepo)
+    }
+    if(!require(tidyr)){
+      install.packages('dplyr',repos=osuRepo)
+    }
 
 load data
 ---------
 
-    # load fx file names
-    fxCons = data.frame(file = list.files('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/')) 
-
+    # load csv file with fx con file names
+    #fxCons = data.frame(file = list.files('./data/FX_models/')) # get file names from contrast .nii files
+    fxCons = read.csv('../../../data/FX_models/fxCons.csv')
+      
     # print header
     fxCons %>%
       head(6) %>%
@@ -102,7 +113,7 @@ load data
 </table>
 
     # load age
-    covariates = read.csv('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/covariates/age.csv')
+    covariates = read.csv('../../../data/covariates/age.csv')
 
     # print header
     covariates %>%
@@ -167,7 +178,7 @@ tidy data
               remove = FALSE) %>%
       mutate(domain = ifelse(con %in% c("con_0001", "con_0003"), "academic", "social"),
              target = ifelse(con %in% c("con_0001", "con_0002"), "self", "other"),
-             InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file),
+             InputFile = paste0('/Volumes/psych-cog/dsnlab/MDC/functional-workshop/data/FX_models/',file), # CHANGE THIS PATH
              wavenum = as.integer(wavenum))
 
 exclude subjects based on motion and number of timepoints
@@ -295,8 +306,8 @@ merge data
 write files
 -----------
 
-    write.table(age.motion, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_all.txt', sep = "\t", quote=FALSE, row.names = FALSE)
-    write.table(age.3Ts, '/Volumes/psych-cog/dsnlab/MDC/functional-workshop/code/RX_comparison/AFNI/model_3Ts.txt', sep = "\t", quote=FALSE, row.names = FALSE)
+    write.table(age.motion, '../../../code/RX_comparison/AFNI/model_all.txt', sep = "\t", quote=FALSE, row.names = FALSE)
+    write.table(age.3Ts, '../AFNI/model_3Ts.txt', sep = "\t", quote=FALSE, row.names = FALSE)
 
 Make 3dLME bash script
 ======================
@@ -309,7 +320,8 @@ Path to bash script:
 
 If you're running this script locally, don't execute the bash chunks for
 this bit or your computer will try to run the code. They're just here so
-that we can take a look at the code.
+that we can take a look at the code (hence the option `eval=FALSE` in
+the code chunk).
 
     #!/bin/bash
     . ~/.bashrc
@@ -373,15 +385,20 @@ that we can take a look at the code.
 Specify model
 -------------
 
--   prefix = model name
+These are all the option specifications that have to do with the model
+itself.
+
+-   prefix = model name for results file name
 -   jobs = number of parallel processors
--   model = model formula
--   ranEff = random effects, 1 = intercept
--   SS\_type = sum of squares type, 3 = marginal
--   qVars = quantitative variables
--   qVars = centering values for quantitative variables
--   mask = binarized group-level mask
--   resid = residual file name
+-   model = model formula, as in the R function `lme` from package
+    `nlme`
+-   ranEff = random effects, 1 = intercept, also as in `lme`
+-   SS\_type = sum of squares type, 3 = marginal (see 3dLME help for
+    more info)
+-   qVars = quantitative, i.e., continuous, variables
+-   qVars = centering values for quantitative variables (use 0 if you've
+    already centered them)
+-   resid = residual file name (we use these later for thresholding)
 
 <!-- -->
 
@@ -392,7 +409,6 @@ Specify model
         -SS_type 3 \
         -qVars "age_c,age_c2" \
         -qVarCenters "0,0" \
-        -mask ./data/RX_mask/groupAverage_opt.nii \
         -resid  all_residuals   \
 
 Specify contrasts (glts)
@@ -402,7 +418,9 @@ Specify contrasts (glts)
 -   gltLabel k = contrast label for contrast k
 -   gltCode k = contrast code for contrast k
 
-<!-- -->
+Please see the [3dLME
+help](https://afni.nimh.nih.gov/pub/dist/doc/program_help/3dLME.html)
+for detailed information about how to specify these contrasts.
 
         -num_glt 9 \
         -gltLabel 1 'self-other' -gltCode  1 'target : 1*self -1*other' \
@@ -418,17 +436,20 @@ Specify contrasts (glts)
 Specify data table (input files and design)
 -------------------------------------------
 
+-   mask = binarized group-level mask (exclude voxels outside the brain)
 -   datatable = data structure with a header
 -   format = subject, condition 1, condition 1, continuous variable 1,
     continuous variable 2, input file
 -   Name requirements
 -   subject ID column must be named `Subj`
 -   file column must be named `InputFile`
+-   the other columns must match names in the model specification, above
 -   Beware of `NA` in your data table. It will not run if there are
     missing continuous variables.
 
 <!-- -->
 
+        -mask ./data/RX_mask/groupAverage_opt.nii \
         -dataTable \
         Subj    target  domain  age_c   age_c2  InputFile \
         s001    self    academic    -2.58469945 6.6806712468303 ./data/FX_models/s001_t1_con_0001.nii \
@@ -497,12 +518,15 @@ Dependencies
 -   IF you're running the script locally, make sure the path to AFNI is
     in your bash environment `~/.bashrc`; if not, export the path to
     your local version of AFNI using
-    `export PATH=$PATH:/Users/danicosme/AFNI_17.0.12/`
+    `export PATH=$PATH:/Your/Path/To/AFNI/`
 -   If you're running it on an HPC clustster, make sure AFNI is loaded
     in the script; replace `. ~/.bashrc` with `module load afni` or
     similar
 -   3dLME runs using R. To ensure all required R packages are installed,
-    execute this AFNI command: `sudo rPkgsInstall -pkgs ALL`
+    execute this AFNI command: `sudo rPkgsInstall -pkgs ALL`, or on an
+    HPC cluster, `rPkgsInstall -pkgs ALL`. You may have to already have
+    set up a path for local R library installation. Your systems
+    administrator should be able to help with this.
 
 Run model
 ---------
@@ -510,52 +534,73 @@ Run model
 #### 1. In the terminal, the contents of the directory that holds that 3dLME bash script
 
     pwd
+    # If you're running this from within R studio, use this path
+    #ls -l code/RX_comparison/AFNI
+    # But if you're knitting, use this
     ls -l ../AFNI
 
-    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
-    ## total 464
-    ## -rw-r--r--  1 danicosme  staff  38616 Sep 13 13:34 3dLME_3Ts.sh
-    ## -rw-r--r--  1 danicosme  staff  76690 Sep 13 13:34 3dLME_all.sh
-    ## -rw-r--r--  1 danicosme  staff    942 Sep 14 13:45 convert_AFNItoNIFTI.sh
-    ## drwxr-xr-x  6 danicosme  staff    204 Sep 13 13:34 logs
-    ## -rw-r--r--  1 danicosme  staff   3087 Sep 13 13:34 make_3dLME_dataTable.Rmd
-    ## -rw-r--r--  1 danicosme  staff  35810 Sep 13 13:34 model_3Ts.txt
-    ## -rw-r--r--  1 danicosme  staff  73056 Sep 13 13:34 model_all.txt
+    ## /home/jflournoy/code/functional-workshop/code/RX_comparison/Presentation
+    ## total 940
+    ## -rw-rw-r-- 1 jflournoy jflournoy  38616 Sep 14 14:15 3dLME_3Ts.sh
+    ## -rw-rw-r-- 1 jflournoy jflournoy  76742 Sep 16 11:00 3dLME_all.sh
+    ## -rw-rw-r-- 1 jflournoy jflournoy    942 Sep 14 14:15 convert_AFNItoNIFTI.sh
+    ## drwxrwxr-x 2 jflournoy jflournoy   4096 Sep 14 15:09 logs
+    ## -rw-rw-r-- 1 jflournoy jflournoy 719036 Sep 16 11:21 make_3dLME_dataTable.html
+    ## -rw-rw-r-- 1 jflournoy jflournoy   3279 Sep 16 11:21 make_3dLME_dataTable.Rmd
+    ## -rw-rw-r-- 1 jflournoy jflournoy  35810 Sep 16 11:42 model_3Ts.txt
+    ## -rw-rw-r-- 1 jflournoy jflournoy  73056 Sep 16 11:42 model_all.txt
 
 #### 2. Change directories to the directory with `3dLME_all.sh` and execute the script. Pipe the output to `logs/3dLME_all.txt` and errors to `logs/3dLME_all_error.txt`
 
     pwd
-    cd ./code/RX_comparison/AFNI
-    bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt
+    # If you're running this from within R studio, use this path
+    #cd code/RX_comparison/AFNI
+    # But if you're knitting, use this
+    cd ../AFNI
+    bash 3dLME_all.sh > logs/3dLME_all.txt 2> logs/3dLME_all_error.txt #this sends standard output to one file, and error output to another
 
 #### 3. Wait a while for the model to finish running
+
+A little longer.
 
 #### 4. Check output file
 
     pwd
-    more ../AFNI/logs/3dLME_all.txt
+    echo "Displaying functional-workshop/code/RX_comparison/AFNI/logs/3dLME_all.txt ..."
+    # If you're running this from within R studio, use this path
+    #cat code/RX_comparison/AFNI/logs/3dLME_all.txt
+    # But if you're knitting, use this
+    cat ../AFNI/logs/3dLME_all.txt
 
-    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
+    ## /home/jflournoy/code/functional-workshop/code/RX_comparison/Presentation
+    ## Displaying functional-workshop/code/RX_comparison/AFNI/logs/3dLME_all.txt ...
+    ## When you run your model, you'll see output in this file.
 
 #### 5. Check results files in the output directory
 
     pwd
+    # If you're running this from within R studio, use this path
+    #ls -l results/AFNI
+    # But if you're knitting, use this
     ls -l ../../../results/AFNI
 
-    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
-    ## total 48848
-    ## -rw-r--r--  1 danicosme  staff      3782 Sep 13 13:34 3dFWHMx.1D
-    ## -rw-r--r--  1 danicosme  staff     17118 Sep 13 13:34 3dFWHMx.1D.png
-    ## -rw-r--r--  1 danicosme  staff  14442416 Sep 14 14:48 MNI152_T1_1mm_brain.nii
-    ## -rw-r--r--  1 danicosme  staff  10417680 Sep 14 14:48 all+tlrc.BRIK
-    ## -rw-r--r--  1 danicosme  staff    120060 Sep 14 14:48 all+tlrc.HEAD
+    ## /home/jflournoy/code/functional-workshop/code/RX_comparison/Presentation
+    ## total 19488
+    ## -rw-rw-r-- 1 jflournoy jflournoy     3782 Sep 14 14:15 3dFWHMx.1D
+    ## -rw-rw-r-- 1 jflournoy jflournoy    17118 Sep 14 14:15 3dFWHMx.1D.png
+    ## -rw-rw-r-- 1 jflournoy jflournoy 10417680 Sep 14 15:09 all+tlrc.BRIK
+    ## -rw-rw-r-- 1 jflournoy jflournoy   120060 Sep 14 15:09 all+tlrc.HEAD
+    ## -rw-rw-r-- 1 jflournoy jflournoy 14442416 Sep 14 15:09 MNI152_T1_1mm_brain.nii
 
 View results in AFNI
 ====================
 
 #### 1. Open AFNI GUI
 
-    cd ../../../results/AFNI
+Execute the following commands from the terminal, replacing the start of
+the path with wherever you've coppied this repository.
+
+    cd /Path/to/functional-workshop/results/AFNI
     afni&
 
 #### 2. Select overlay by clicking on `Overlay` and choosing the model labeled `all`
@@ -616,6 +661,7 @@ wrappers to do neuroimaging and visualization in R. He also co-teaches a
 [fabulous class on neurohacking in
 R](https://www.coursera.org/learn/neurohacking) through Coursera.
 
+    osuRepo <-  'https://ftp.osuosl.org/pub/cran/'
     if(!require(fslr)){
       install.packages('fslr',repos=osuRepo)
     }
