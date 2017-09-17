@@ -79,6 +79,9 @@ fi
 
 The output will be saved in a text file `functional-workshop/results/ROI_analysis/parameterEstimates.txt`
 ```{r}
+# set mirror from which to download packages
+osuRepo = 'http://ftp.osuosl.org/pub/cran/'
+
 if(!require(knitr)){
   install.packages('knitr',repos=osuRepo)
 }
@@ -93,9 +96,6 @@ read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill =
 
 # Load packages
 ```{r, load packages}
-# set mirror from which to download packages
-osuRepo = 'http://ftp.osuosl.org/pub/cran/'
-
 if(!require(tidyr)){
   install.packages('tidyr',repos=osuRepo)
 }
@@ -118,8 +118,8 @@ if(!require(rmarkdown)){
 
 # Load data
 ```{r, load data}
-# load parameter estimate .csv file
-data = read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = "", fill = TRUE, stringsAsFactors=FALSE)
+# load parameter estimate delimited .txt file
+data = read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = " ", fill = TRUE, stringsAsFactors=FALSE)
 
 # load age covariates and rename variables
 age = read.csv('../../data/covariates/age.csv') %>%
@@ -153,6 +153,7 @@ data1 = data %>%
 
 # Merge data, add age to the data frame and center
 ```{r, merge data}
+#Take every row in `age` that matches values in `data1` columns 'subjectID' and 'wave'
 merged = left_join(data1, age, by = c('subjectID', 'wave')) %>%
   mutate(age_c = age-mean(age, na.rm=TRUE))
 
@@ -163,21 +164,25 @@ merged %>%
 ```
 
 # Remove missing data to run LME models
+
+Note here we're only removing rows where participants have no data. We're keeping all available data from participants whether or not they have data at all waves.
+
 ```{r, remove missing data}
 data.complete = merged %>%
   na.omit(.)
 
 # print number of rows
-cat('raw data: ', nrow(merged))
-cat('\ncomplete data: ', nrow(data.complete))
+cat('rows in raw data frame: ', nrow(merged))
+cat('\nrows in available data frame: ', nrow(data.complete))
 ```
 
 # Run LME models within parcel 292 and compare 
-Predict parameter estimates from task conditions (target and domain) and age within parcel 292.
+Regress parameter estimates on task conditions (target and domain) and age within parcel 292.
 
 ## Linear effect of age, random intercepts only
 ```{r, model.1}
-model.1 = lmer(beta ~ target*domain*age_c + (1 | subjectID), data=filter(data.complete, parcellation == 292))
+model.1 = lmer(beta ~ target*domain*age_c + (1 | subjectID), 
+               data=filter(data.complete, parcellation == 292)) #filter gets us just the rows from parcel 292
 summary(model.1)
 ```
 
@@ -193,12 +198,16 @@ summary(model.2)
 **model.2:** `beta ~ target * domain * age_c + (1 + age_c | subjectID)`
 
 ```{r, compare models}
-anova(model.1, model.2) %>%
+#Note we set refit = FALSE below. We don't need to refit using ML instead of REML because we're
+#comparing models with different random effects. If we kept the random effects the same and 
+#changed the fixed effects, sat by adding a covariate to the model, we would want to 
+#refit using ML. See ?anova.merMod for more info.
+anova(model.1, model.2, refit = FALSE) %>%
   `row.names<-`(c('model.1', 'model.2')) %>%
   kable(digits = 2)
 ```
 
-Adding age as a random effect does not significantly improve the model fit.  
+Adding age as a random effect does not significantly improve the model fit. Note that though the AIC is lower for model.2, it is only slightly so, and BIC favors the simpler model.  
 
 # Visualize raw data
 ```{r, palette}
@@ -208,6 +217,9 @@ palette = wes_palette("Zissou", 2, type = "continuous")
 
 ## Plot fitted curves for parcels 292 and 116
 ### Main effect of target
+
+The light colored points are first-level model parameter estimates for each participant, at each wave, for each condition in the 2x2 target-by-domain design. Light colored lines connect data points within the same participant and design cell (e.g., participant s001 Self-Academic). Best fit lines are estimated using ordinary least squares linear regression.
+
 ```{r, raw fitted main effect}
 ggplot(data.complete, aes(x = age, 
                           y = beta, 
@@ -252,7 +264,7 @@ ggplot(data.complete, aes(x = age,
                           linetype = domain)) +
   geom_point(size = .5, alpha = .1) + 
   geom_line(alpha = .1) + 
-  geom_line(aes(group=target), size = 1.5, stat = 'smooth', method = 'loess') + 
+  geom_line(aes(group=target), size = 1.5, stat = 'smooth', method = 'loess', span=1) + #play with span to get more or less complex curves
   facet_wrap(~parcellation, ncol = 2) +
   geom_hline(yintercept = 0, color = 'gray')+
   scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
@@ -270,7 +282,7 @@ ggplot(data.complete, aes(x = age,
                           linetype = domain)) +
   geom_point(size = .5, alpha = .1) + 
   geom_line(alpha = .1) + 
-  geom_line(aes(group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'loess') + 
+  geom_line(aes(group=interaction(target,domain)), size = 1.5, stat = 'smooth', method = 'loess', span = 1) + 
   facet_wrap(~parcellation, ncol = 2) +
   geom_hline(yintercept = 0, color = 'gray')+
   scale_color_manual(breaks = c('self', 'other'), values = c(self=palette[2], other=palette[1]))+
@@ -285,24 +297,30 @@ Linear effect of age, random intercepts only
 **model.1:** `beta ~ target * domain * age_c + (1 | subjectID)`
 
 ## Plot fitted curves for parcels 292 and 116
+
+We'd probably prefer to see fitted curves from the LME model we ran, rather than a OLS regression. To do this, we need to get the model predicted values for the fixed effects, as well as for every participant's deviation as captured by our random effect terms.
+
 ```{r, predict model.1}
-# extract random effects formula from model.2 and reconstruct it to use with the `predict` function
+# extract random effects formula from model.1 and reconstruct it to use with the `predict` function
 REFormulaString = as.character(findbars(model.1@call$formula)[[1]])
 REFormula = as.formula(paste0('~(', REFormulaString[[2]], REFormulaString[[1]], REFormulaString[[3]], ')'))
 
-# get expected values for each observation based on model.2
-data.complete$expected.1 <- predict(model.1, newdata = data.complete, re.form=REFormula)
-data.complete$expected_mean.1 <- predict(model.1, newdata = data.complete, re.form=NA)
+# get expected values for each observation based on model.1
+data.complete$expected.1 <- predict(model.1, newdata = data.complete, re.form=REFormula) # different estimates per participant
+data.complete$expected_mean.1 <- predict(model.1, newdata = data.complete, re.form=NA) # the group expectation, as described by the fixed effect
 ```
 
 ### Main effect of target
+
+Notice that the slopes for each factor level (Self, Other) are parallel. This is because participant estimates were only unconstrained to differ in their intercept.
+
 ```{r, predicted main effect model.1}
 ggplot(data.complete, aes(x = age, 
                           y = expected.1, 
                           group = interaction(subjectID, target, domain), 
                           color = target)) +
   geom_point(size = .5, alpha = .1) + 
-  geom_line(alpha = .1) + 
+  geom_line(alpha = .2) + 
   geom_line(aes(y = expected_mean.1, group=target), size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
   facet_wrap(~parcellation, ncol = 2) +
   geom_hline(yintercept = 0, color = 'gray') +
@@ -347,13 +365,16 @@ data.complete$expected_mean.2 <- predict(model.2, newdata = data.complete, re.fo
 ```
 
 ### Main effect of target
+
+Now that we're plotting model predicted values from a model with both random intercepts and slopes we can see that the per-participant slopes are not longer exactly parallel. However, visual inspection does reveal that there is not much deviation from the parellel slopes we saw above. This is consistent with the results from the model comparison, above.
+
 ```{r, predicted main effect model.2}
 ggplot(data.complete, aes(x = age, 
                           y = expected.2, 
                           group = interaction(subjectID, target, domain), 
                           color = target)) +
   geom_point(size = .5, alpha = .1) + 
-  geom_line(alpha = .1) + 
+  geom_line(alpha = .2) + 
   geom_line(aes(y = expected_mean.2, group=target), size = 1.5, stat = 'smooth', method = 'lm', formula = y ~ poly(x,2)) + 
   facet_wrap(~parcellation, ncol = 2) +
   geom_hline(yintercept = 0, color = 'gray') +

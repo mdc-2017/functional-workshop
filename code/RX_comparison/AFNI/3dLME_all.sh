@@ -2,6 +2,7 @@
 . ~/.bashrc
 
 # Change directory to the model results folder
+# This is the folder your results will be saved to.
 cd /Volumes/psych-cog/dsnlab/MDC/functional-workshop/results/AFNI
 
 # Specify 3dLME model

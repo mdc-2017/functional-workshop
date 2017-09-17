@@ -7,8 +7,18 @@ This script takes first-level FX contrasts (each condition > rest) and age covar
 
 ## load packages
 ```{r, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(knitr)
+# set mirror from which to download packages
+osuRepo = 'http://ftp.osuosl.org/pub/cran/'
+
+if(!require(knitr)){
+  install.packages('knitr',repos=osuRepo)
+}
+if(!require(dplyr)){
+  install.packages('dplyr',repos=osuRepo)
+}
+if(!require(tidyr)){
+  install.packages('dplyr',repos=osuRepo)
+}
 ```
 
 ## load data
