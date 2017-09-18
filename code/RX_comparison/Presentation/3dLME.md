@@ -539,16 +539,16 @@ Run model
     # But if you're knitting, use this
     ls -l ../AFNI
 
-    ## /home/jflournoy/code/functional-workshop/code/RX_comparison/Presentation
-    ## total 940
-    ## -rw-rw-r-- 1 jflournoy jflournoy  38616 Sep 14 14:15 3dLME_3Ts.sh
-    ## -rw-rw-r-- 1 jflournoy jflournoy  76742 Sep 16 11:00 3dLME_all.sh
-    ## -rw-rw-r-- 1 jflournoy jflournoy    942 Sep 14 14:15 convert_AFNItoNIFTI.sh
-    ## drwxrwxr-x 2 jflournoy jflournoy   4096 Sep 14 15:09 logs
-    ## -rw-rw-r-- 1 jflournoy jflournoy 719036 Sep 16 11:21 make_3dLME_dataTable.html
-    ## -rw-rw-r-- 1 jflournoy jflournoy   3279 Sep 16 11:21 make_3dLME_dataTable.Rmd
-    ## -rw-rw-r-- 1 jflournoy jflournoy  35810 Sep 16 11:42 model_3Ts.txt
-    ## -rw-rw-r-- 1 jflournoy jflournoy  73056 Sep 16 11:42 model_all.txt
+    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
+    ## total 1872
+    ## -rw-r--r--  1 danicosme  staff   38616 Sep 13 13:34 3dLME_3Ts.sh
+    ## -rw-r--r--  1 danicosme  staff   76742 Sep 18 09:21 3dLME_all.sh
+    ## -rw-r--r--  1 danicosme  staff     942 Sep 14 13:45 convert_AFNItoNIFTI.sh
+    ## drwxr-xr-x  6 danicosme  staff     204 Sep 18 09:21 logs
+    ## -rw-r--r--  1 danicosme  staff    3279 Sep 18 09:21 make_3dLME_dataTable.Rmd
+    ## -rw-r--r--  1 danicosme  staff  718785 Sep 15 15:56 make_3dLME_dataTable.html
+    ## -rw-r--r--  1 danicosme  staff   35810 Sep 18 09:23 model_3Ts.txt
+    ## -rw-r--r--  1 danicosme  staff   73056 Sep 18 09:23 model_all.txt
 
 #### 2. Change directories to the directory with `3dLME_all.sh` and execute the script. Pipe the output to `logs/3dLME_all.txt` and errors to `logs/3dLME_all_error.txt`
 
@@ -572,7 +572,7 @@ A little longer.
     # But if you're knitting, use this
     cat ../AFNI/logs/3dLME_all.txt
 
-    ## /home/jflournoy/code/functional-workshop/code/RX_comparison/Presentation
+    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
     ## Displaying functional-workshop/code/RX_comparison/AFNI/logs/3dLME_all.txt ...
     ## When you run your model, you'll see output in this file.
 
@@ -584,13 +584,13 @@ A little longer.
     # But if you're knitting, use this
     ls -l ../../../results/AFNI
 
-    ## /home/jflournoy/code/functional-workshop/code/RX_comparison/Presentation
-    ## total 19488
-    ## -rw-rw-r-- 1 jflournoy jflournoy     3782 Sep 14 14:15 3dFWHMx.1D
-    ## -rw-rw-r-- 1 jflournoy jflournoy    17118 Sep 14 14:15 3dFWHMx.1D.png
-    ## -rw-rw-r-- 1 jflournoy jflournoy 10417680 Sep 14 15:09 all+tlrc.BRIK
-    ## -rw-rw-r-- 1 jflournoy jflournoy   120060 Sep 14 15:09 all+tlrc.HEAD
-    ## -rw-rw-r-- 1 jflournoy jflournoy 14442416 Sep 14 15:09 MNI152_T1_1mm_brain.nii
+    ## /Users/danicosme/Documents/code/dsnlab/functional-workshop/code/RX_comparison/Presentation
+    ## total 48848
+    ## -rw-r--r--  1 danicosme  staff      3782 Sep 13 13:34 3dFWHMx.1D
+    ## -rw-r--r--  1 danicosme  staff     17118 Sep 13 13:34 3dFWHMx.1D.png
+    ## -rw-r--r--  1 danicosme  staff  14442416 Sep 14 14:48 MNI152_T1_1mm_brain.nii
+    ## -rw-r--r--  1 danicosme  staff  10417680 Sep 14 14:48 all+tlrc.BRIK
+    ## -rw-r--r--  1 danicosme  staff    120060 Sep 14 14:48 all+tlrc.HEAD
 
 View results in AFNI
 ====================

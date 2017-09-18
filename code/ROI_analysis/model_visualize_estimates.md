@@ -547,7 +547,8 @@ Linear effect of age, random intercepts only
                    data=filter(data.complete, parcellation == 292)) #filter gets us just the rows from parcel 292
     summary(model.1)
 
-    ## Linear mixed model fit by REML ['lmerMod']
+    ## Linear mixed model fit by REML t-tests use Satterthwaite approximations
+    ##   to degrees of freedom [lmerMod]
     ## Formula: beta ~ target * domain * age_c + (1 | subjectID)
     ##    Data: filter(data.complete, parcellation == 292)
     ## 
@@ -564,15 +565,26 @@ Linear effect of age, random intercepts only
     ## Number of obs: 648, groups:  subjectID, 81
     ## 
     ## Fixed effects:
-    ##                               Estimate Std. Error t value
-    ## (Intercept)                   -0.07709    0.05422  -1.422
-    ## targetself                     0.03147    0.05663   0.556
-    ## domainsocial                   0.09379    0.05663   1.656
-    ## age_c                         -0.03904    0.01658  -2.354
-    ## targetself:domainsocial        0.09714    0.08008   1.213
-    ## targetself:age_c               0.06418    0.02278   2.817
-    ## domainsocial:age_c             0.02990    0.02278   1.312
-    ## targetself:domainsocial:age_c -0.06094    0.03222  -1.891
+    ##                                Estimate Std. Error        df t value
+    ## (Intercept)                    -0.07709    0.05422 199.40000  -1.422
+    ## targetself                      0.03147    0.05663 554.60000   0.556
+    ## domainsocial                    0.09379    0.05663 554.60000   1.656
+    ## age_c                          -0.03904    0.01658 584.80000  -2.354
+    ## targetself:domainsocial         0.09714    0.08008 554.60000   1.213
+    ## targetself:age_c                0.06418    0.02278 554.60000   2.817
+    ## domainsocial:age_c              0.02990    0.02278 554.60000   1.312
+    ## targetself:domainsocial:age_c  -0.06094    0.03222 554.60000  -1.891
+    ##                               Pr(>|t|)   
+    ## (Intercept)                    0.15660   
+    ## targetself                     0.57861   
+    ## domainsocial                   0.09824 . 
+    ## age_c                          0.01889 * 
+    ## targetself:domainsocial        0.22563   
+    ## targetself:age_c               0.00502 **
+    ## domainsocial:age_c             0.19000   
+    ## targetself:domainsocial:age_c  0.05911 . 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Correlation of Fixed Effects:
     ##             (Intr) trgtsl dmnscl age_c  trgts: trgt:_ dmns:_
@@ -590,7 +602,8 @@ Linear effect of age, random intercepts and age slopes
     model.2 = lmer(beta ~ target*domain*age_c + (1 + age_c | subjectID), data=filter(data.complete, parcellation == 292))
     summary(model.2)
 
-    ## Linear mixed model fit by REML ['lmerMod']
+    ## Linear mixed model fit by REML t-tests use Satterthwaite approximations
+    ##   to degrees of freedom [lmerMod]
     ## Formula: beta ~ target * domain * age_c + (1 + age_c | subjectID)
     ##    Data: filter(data.complete, parcellation == 292)
     ## 
@@ -608,15 +621,26 @@ Linear effect of age, random intercepts and age slopes
     ## Number of obs: 648, groups:  subjectID, 81
     ## 
     ## Fixed effects:
-    ##                               Estimate Std. Error t value
-    ## (Intercept)                   -0.07347    0.05281  -1.391
-    ## targetself                     0.03147    0.05595   0.562
-    ## domainsocial                   0.09379    0.05595   1.676
-    ## age_c                         -0.03807    0.01680  -2.266
-    ## targetself:domainsocial        0.09714    0.07913   1.228
-    ## targetself:age_c               0.06418    0.02251   2.851
-    ## domainsocial:age_c             0.02990    0.02251   1.328
-    ## targetself:domainsocial:age_c -0.06094    0.03184  -1.914
+    ##                                Estimate Std. Error        df t value
+    ## (Intercept)                    -0.07347    0.05281 204.40000  -1.391
+    ## targetself                      0.03147    0.05595 516.30000   0.562
+    ## domainsocial                    0.09379    0.05595 516.30000   1.676
+    ## age_c                          -0.03807    0.01680 307.30000  -2.266
+    ## targetself:domainsocial         0.09714    0.07913 516.30000   1.228
+    ## targetself:age_c                0.06418    0.02251 516.30000   2.851
+    ## domainsocial:age_c              0.02990    0.02251 516.30000   1.328
+    ## targetself:domainsocial:age_c  -0.06094    0.03184 516.30000  -1.914
+    ##                               Pr(>|t|)   
+    ## (Intercept)                    0.16569   
+    ## targetself                     0.57405   
+    ## domainsocial                   0.09429 . 
+    ## age_c                          0.02412 * 
+    ## targetself:domainsocial        0.22013   
+    ## targetself:age_c               0.00453 **
+    ## domainsocial:age_c             0.18475   
+    ## targetself:domainsocial:age_c  0.05617 . 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Correlation of Fixed Effects:
     ##             (Intr) trgtsl dmnscl age_c  trgts: trgt:_ dmns:_
