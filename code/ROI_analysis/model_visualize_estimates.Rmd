@@ -401,3 +401,23 @@ ggplot(data.complete, aes(x = age,
   coord_cartesian(ylim=c(-1,1)) +
   theme_minimal(base_size = 18)
 ```
+
+# Error covariance
+
+```{r, correct residual structure}
+if(!require(nlme)){
+  install.packages('nlme',repos=osuRepo)
+}
+
+# data.complete$TxD <- interaction(data.complete$target, data.complete$domain)
+
+model1.data <- within(filter(data.complete, parcellation == 292), one1 <- one2 <- one3 <- 1L)
+
+model.1.corstr <- lme(beta ~ 1 + target*domain*age_c, 
+                      random = ~1 + age_c | subjectID/target/domain,
+                      correlation = corCAR1(form = ~ age_c),
+                      data=model1.data)
+
+summary(model.1.corstr)
+
+```
