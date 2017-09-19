@@ -43,6 +43,7 @@
         -   [Main effect of target](#main-effect-of-target-3)
         -   [Interaction between target and
             domain](#interaction-between-target-and-domain-3)
+-   [Error covariance](#error-covariance)
 
 ROIs from the [Craddock et al. (2012) parcellation atlas](http://ccraddock.github.io/cluster_roi/atlases.html)
 ==============================================================================================================
@@ -547,8 +548,7 @@ Linear effect of age, random intercepts only
                    data=filter(data.complete, parcellation == 292)) #filter gets us just the rows from parcel 292
     summary(model.1)
 
-    ## Linear mixed model fit by REML t-tests use Satterthwaite approximations
-    ##   to degrees of freedom [lmerMod]
+    ## Linear mixed model fit by REML ['lmerMod']
     ## Formula: beta ~ target * domain * age_c + (1 | subjectID)
     ##    Data: filter(data.complete, parcellation == 292)
     ## 
@@ -565,26 +565,15 @@ Linear effect of age, random intercepts only
     ## Number of obs: 648, groups:  subjectID, 81
     ## 
     ## Fixed effects:
-    ##                                Estimate Std. Error        df t value
-    ## (Intercept)                    -0.07709    0.05422 199.40000  -1.422
-    ## targetself                      0.03147    0.05663 554.60000   0.556
-    ## domainsocial                    0.09379    0.05663 554.60000   1.656
-    ## age_c                          -0.03904    0.01658 584.80000  -2.354
-    ## targetself:domainsocial         0.09714    0.08008 554.60000   1.213
-    ## targetself:age_c                0.06418    0.02278 554.60000   2.817
-    ## domainsocial:age_c              0.02990    0.02278 554.60000   1.312
-    ## targetself:domainsocial:age_c  -0.06094    0.03222 554.60000  -1.891
-    ##                               Pr(>|t|)   
-    ## (Intercept)                    0.15660   
-    ## targetself                     0.57861   
-    ## domainsocial                   0.09824 . 
-    ## age_c                          0.01889 * 
-    ## targetself:domainsocial        0.22563   
-    ## targetself:age_c               0.00502 **
-    ## domainsocial:age_c             0.19000   
-    ## targetself:domainsocial:age_c  0.05911 . 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                               Estimate Std. Error t value
+    ## (Intercept)                   -0.07709    0.05422  -1.422
+    ## targetself                     0.03147    0.05663   0.556
+    ## domainsocial                   0.09379    0.05663   1.656
+    ## age_c                         -0.03904    0.01658  -2.354
+    ## targetself:domainsocial        0.09714    0.08008   1.213
+    ## targetself:age_c               0.06418    0.02278   2.817
+    ## domainsocial:age_c             0.02990    0.02278   1.312
+    ## targetself:domainsocial:age_c -0.06094    0.03222  -1.891
     ## 
     ## Correlation of Fixed Effects:
     ##             (Intr) trgtsl dmnscl age_c  trgts: trgt:_ dmns:_
@@ -602,8 +591,7 @@ Linear effect of age, random intercepts and age slopes
     model.2 = lmer(beta ~ target*domain*age_c + (1 + age_c | subjectID), data=filter(data.complete, parcellation == 292))
     summary(model.2)
 
-    ## Linear mixed model fit by REML t-tests use Satterthwaite approximations
-    ##   to degrees of freedom [lmerMod]
+    ## Linear mixed model fit by REML ['lmerMod']
     ## Formula: beta ~ target * domain * age_c + (1 + age_c | subjectID)
     ##    Data: filter(data.complete, parcellation == 292)
     ## 
@@ -621,26 +609,15 @@ Linear effect of age, random intercepts and age slopes
     ## Number of obs: 648, groups:  subjectID, 81
     ## 
     ## Fixed effects:
-    ##                                Estimate Std. Error        df t value
-    ## (Intercept)                    -0.07347    0.05281 204.40000  -1.391
-    ## targetself                      0.03147    0.05595 516.30000   0.562
-    ## domainsocial                    0.09379    0.05595 516.30000   1.676
-    ## age_c                          -0.03807    0.01680 307.30000  -2.266
-    ## targetself:domainsocial         0.09714    0.07913 516.30000   1.228
-    ## targetself:age_c                0.06418    0.02251 516.30000   2.851
-    ## domainsocial:age_c              0.02990    0.02251 516.30000   1.328
-    ## targetself:domainsocial:age_c  -0.06094    0.03184 516.30000  -1.914
-    ##                               Pr(>|t|)   
-    ## (Intercept)                    0.16569   
-    ## targetself                     0.57405   
-    ## domainsocial                   0.09429 . 
-    ## age_c                          0.02412 * 
-    ## targetself:domainsocial        0.22013   
-    ## targetself:age_c               0.00453 **
-    ## domainsocial:age_c             0.18475   
-    ## targetself:domainsocial:age_c  0.05617 . 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                               Estimate Std. Error t value
+    ## (Intercept)                   -0.07347    0.05281  -1.391
+    ## targetself                     0.03147    0.05595   0.562
+    ## domainsocial                   0.09379    0.05595   1.676
+    ## age_c                         -0.03807    0.01680  -2.266
+    ## targetself:domainsocial        0.09714    0.07913   1.228
+    ## targetself:age_c               0.06418    0.02251   2.851
+    ## domainsocial:age_c             0.02990    0.02251   1.328
+    ## targetself:domainsocial:age_c -0.06094    0.03184  -1.914
     ## 
     ## Correlation of Fixed Effects:
     ##             (Intr) trgtsl dmnscl age_c  trgts: trgt:_ dmns:_
@@ -929,3 +906,222 @@ This is consistent with the results from the model comparison, above.
       theme_minimal(base_size = 18)
 
 ![](model_visualize_estimates_files/figure-markdown_strict/predicted%20interaction%20model.2-1.png)
+
+Error covariance
+================
+
+    require(brms)
+
+    model.data <- within(filter(data.complete, parcellation == 292), age_c_m <- round(age_c * 12))
+
+    model2.lmer = lmer(beta ~ target*domain*age_c_m + (1 + age_c_m | subjectID), 
+                   data=model.data) #filter gets us just the rows from parcel 292
+
+    model2.brm <- brms::brm(beta ~ 1 + age_c_m*target*domain + (1 + age_c_m | subjectID),
+                            chains = 4,
+                            cores = 4,
+                            save_model = './brm_model.stan',
+                            save_dso = TRUE,
+                            data = model.data)
+
+    model2.brm_ar <- brms::brm(beta ~ 1 + age_c_m*target*domain + (1 + age_c_m | subjectID), 
+                            autocor = brms::cor_ar(formula = ~ age_c_m | subjectID, p = 1),
+                            chains = 4,
+                            cores = 4,
+                            save_model = './brm_ar_model.stan',
+                            save_dso = TRUE,
+                            data = model.data)
+
+    summary(model2.lmer)
+
+    ## Linear mixed model fit by REML ['lmerMod']
+    ## Formula: beta ~ target * domain * age_c_m + (1 + age_c_m | subjectID)
+    ##    Data: model.data
+    ## 
+    ## REML criterion at convergence: 1121.1
+    ## 
+    ## Scaled residuals: 
+    ##     Min      1Q  Median      3Q     Max 
+    ## -3.8155 -0.4812  0.0314  0.4536  4.3691 
+    ## 
+    ## Random effects:
+    ##  Groups    Name        Variance  Std.Dev. Corr 
+    ##  subjectID (Intercept) 9.288e-02 0.304757      
+    ##            age_c_m     8.080e-06 0.002843 -0.60
+    ##  Residual              2.520e-01 0.502042      
+    ## Number of obs: 648, groups:  subjectID, 81
+    ## 
+    ## Fixed effects:
+    ##                                  Estimate Std. Error t value
+    ## (Intercept)                     -0.073470   0.052810  -1.391
+    ## targetself                       0.031454   0.055943   0.562
+    ## domainsocial                     0.093764   0.055943   1.676
+    ## age_c_m                         -0.003179   0.001400  -2.271
+    ## targetself:domainsocial          0.097146   0.079116   1.228
+    ## targetself:age_c_m               0.005355   0.001876   2.855
+    ## domainsocial:age_c_m             0.002488   0.001876   1.326
+    ## targetself:domainsocial:age_c_m -0.005089   0.002653  -1.919
+    ## 
+    ## Correlation of Fixed Effects:
+    ##             (Intr) trgtsl dmnscl ag_c_m trgts: trg:__ dmn:__
+    ## targetself  -0.530                                          
+    ## domainsocil -0.530  0.500                                   
+    ## age_c_m     -0.003 -0.051 -0.051                            
+    ## trgtslf:dmn  0.375 -0.707 -0.707  0.036                     
+    ## trgtslf:g__ -0.040  0.076  0.038 -0.670 -0.054              
+    ## dmnscl:g_c_ -0.040  0.038  0.076 -0.670 -0.054  0.500       
+    ## trgtslf::__  0.028 -0.054 -0.054  0.474  0.076 -0.707 -0.707
+
+    summary(model2.brm)
+
+    ##  Family: gaussian(identity) 
+    ## Formula: beta ~ 1 + age_c_m * target * domain + (1 + age_c_m | subjectID) 
+    ##    Data: model.data (Number of observations: 648) 
+    ## Samples: 4 chains, each with iter = 2000; warmup = 1000; thin = 1; 
+    ##          total post-warmup samples = 4000
+    ##     ICs: LOO = NA; WAIC = NA; R2 = NA
+    ##  
+    ## Group-Level Effects: 
+    ## ~subjectID (Number of levels: 81) 
+    ##                        Estimate Est.Error l-95% CI u-95% CI Eff.Sample
+    ## sd(Intercept)              0.31      0.04     0.25     0.39       1693
+    ## sd(age_c_m)                0.00      0.00     0.00     0.01        822
+    ## cor(Intercept,age_c_m)    -0.49      0.31    -0.96     0.21       2685
+    ##                        Rhat
+    ## sd(Intercept)          1.00
+    ## sd(age_c_m)            1.01
+    ## cor(Intercept,age_c_m) 1.00
+    ## 
+    ## Population-Level Effects: 
+    ##                                 Estimate Est.Error l-95% CI u-95% CI
+    ## Intercept                          -0.08      0.05    -0.18     0.03
+    ## age_c_m                            -0.00      0.00    -0.01    -0.00
+    ## targetself                          0.03      0.06    -0.08     0.14
+    ## domainsocial                        0.09      0.06    -0.01     0.21
+    ## age_c_m:targetself                  0.01      0.00     0.00     0.01
+    ## age_c_m:domainsocial                0.00      0.00    -0.00     0.01
+    ## targetself:domainsocial             0.10      0.08    -0.06     0.25
+    ## age_c_m:targetself:domainsocial    -0.01      0.00    -0.01     0.00
+    ##                                 Eff.Sample Rhat
+    ## Intercept                             1778 1.00
+    ## age_c_m                               4000 1.00
+    ## targetself                            3436 1.00
+    ## domainsocial                          3442 1.00
+    ## age_c_m:targetself                    4000 1.00
+    ## age_c_m:domainsocial                  4000 1.00
+    ## targetself:domainsocial               2847 1.00
+    ## age_c_m:targetself:domainsocial       4000 1.00
+    ## 
+    ## Family Specific Parameters: 
+    ##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+    ## sigma     0.50      0.02     0.48     0.54       4000 1.00
+    ## 
+    ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
+    ## is a crude measure of effective sample size, and Rhat is the potential 
+    ## scale reduction factor on split chains (at convergence, Rhat = 1).
+
+    summary(model2.brm_ar)
+
+    ##  Family: gaussian(identity) 
+    ## Formula: beta ~ 1 + age_c_m * target * domain + (1 + age_c_m | subjectID) 
+    ##    Data: model.data (Number of observations: 648) 
+    ## Samples: 4 chains, each with iter = 2000; warmup = 1000; thin = 1; 
+    ##          total post-warmup samples = 4000
+    ##     ICs: LOO = NA; WAIC = NA; R2 = NA
+    ##  
+    ## Group-Level Effects: 
+    ## ~subjectID (Number of levels: 81) 
+    ##                        Estimate Est.Error l-95% CI u-95% CI Eff.Sample
+    ## sd(Intercept)              0.29      0.04     0.21     0.37       1430
+    ## sd(age_c_m)                0.00      0.00     0.00     0.00       1353
+    ## cor(Intercept,age_c_m)    -0.41      0.44    -0.97     0.73       4000
+    ##                        Rhat
+    ## sd(Intercept)          1.00
+    ## sd(age_c_m)            1.00
+    ## cor(Intercept,age_c_m) 1.00
+    ## 
+    ## Correlation Structure: arma(~age_c_m|subjectID, 1, 0, 0)
+    ##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+    ## ar[1]     0.16      0.05     0.05     0.26       4000 1.00
+    ## 
+    ## Population-Level Effects: 
+    ##                                 Estimate Est.Error l-95% CI u-95% CI
+    ## Intercept                          -0.07      0.05    -0.18     0.03
+    ## age_c_m                            -0.00      0.00    -0.01    -0.00
+    ## targetself                          0.03      0.06    -0.08     0.14
+    ## domainsocial                        0.09      0.05    -0.01     0.20
+    ## age_c_m:targetself                  0.01      0.00     0.00     0.01
+    ## age_c_m:domainsocial                0.00      0.00    -0.00     0.01
+    ## targetself:domainsocial             0.10      0.08    -0.05     0.25
+    ## age_c_m:targetself:domainsocial    -0.00      0.00    -0.01     0.00
+    ##                                 Eff.Sample Rhat
+    ## Intercept                             3206 1.00
+    ## age_c_m                               4000 1.00
+    ## targetself                            4000 1.00
+    ## domainsocial                          4000 1.00
+    ## age_c_m:targetself                    4000 1.00
+    ## age_c_m:domainsocial                  4000 1.00
+    ## targetself:domainsocial               4000 1.00
+    ## age_c_m:targetself:domainsocial       4000 1.00
+    ## 
+    ## Family Specific Parameters: 
+    ##       Estimate Est.Error l-95% CI u-95% CI Eff.Sample Rhat
+    ## sigma     0.51      0.02     0.48     0.55       4000 1.00
+    ## 
+    ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
+    ## is a crude measure of effective sample size, and Rhat is the potential 
+    ## scale reduction factor on split chains (at convergence, Rhat = 1).
+
+    coef(summary(model2.lmer))
+
+    ##                                     Estimate  Std. Error    t value
+    ## (Intercept)                     -0.073470497 0.052810415 -1.3912123
+    ## targetself                       0.031453905 0.055943154  0.5622476
+    ## domainsocial                     0.093763682 0.055943154  1.6760528
+    ## age_c_m                         -0.003178912 0.001399846 -2.2709010
+    ## targetself:domainsocial          0.097145970 0.079115567  1.2278996
+    ## targetself:age_c_m               0.005355060 0.001875674  2.8550055
+    ## domainsocial:age_c_m             0.002487588 0.001875674  1.3262367
+    ## targetself:domainsocial:age_c_m -0.005089086 0.002652604 -1.9185249
+
+    fixef(model2.brm)
+
+    ##                                     Estimate   Est.Error      2.5%ile
+    ## Intercept                       -0.075509127 0.053108958 -0.178948862
+    ## age_c_m                         -0.003185683 0.001369467 -0.005792005
+    ## targetself                       0.031210223 0.056104750 -0.079404969
+    ## domainsocial                     0.094097340 0.055866869 -0.013862739
+    ## age_c_m:targetself               0.005341208 0.001885799  0.001765193
+    ## age_c_m:domainsocial             0.002480332 0.001846402 -0.001205033
+    ## targetself:domainsocial          0.096676195 0.079046842 -0.057030629
+    ## age_c_m:targetself:domainsocial -0.005079289 0.002628888 -0.010334800
+    ##                                      97.5%ile
+    ## Intercept                        3.083135e-02
+    ## age_c_m                         -5.102103e-04
+    ## targetself                       1.402374e-01
+    ## domainsocial                     2.059744e-01
+    ## age_c_m:targetself               9.148621e-03
+    ## age_c_m:domainsocial             5.989824e-03
+    ## targetself:domainsocial          2.536933e-01
+    ## age_c_m:targetself:domainsocial  6.452908e-05
+
+    fixef(model2.brm_ar)
+
+    ##                                     Estimate   Est.Error      2.5%ile
+    ## Intercept                       -0.073511758 0.053997080 -0.178107970
+    ## age_c_m                         -0.003137828 0.001428935 -0.005927824
+    ## targetself                       0.027107883 0.056425452 -0.079353848
+    ## domainsocial                     0.094654169 0.052980421 -0.008868739
+    ## age_c_m:targetself               0.005107574 0.001896539  0.001316093
+    ## age_c_m:domainsocial             0.002565550 0.001770990 -0.000772866
+    ## targetself:domainsocial          0.100165268 0.078071907 -0.053492938
+    ## age_c_m:targetself:domainsocial -0.004945295 0.002569320 -0.009941738
+    ##                                      97.5%ile
+    ## Intercept                        0.0333271694
+    ## age_c_m                         -0.0003434382
+    ## targetself                       0.1362407062
+    ## domainsocial                     0.1986361434
+    ## age_c_m:targetself               0.0087548170
+    ## age_c_m:domainsocial             0.0060314996
+    ## targetself:domainsocial          0.2532445955
+    ## age_c_m:targetself:domainsocial  0.0000488878

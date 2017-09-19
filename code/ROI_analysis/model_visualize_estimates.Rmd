@@ -404,20 +404,39 @@ ggplot(data.complete, aes(x = age,
 
 # Error covariance
 
-```{r, correct residual structure}
-if(!require(nlme)){
-  install.packages('nlme',repos=osuRepo)
-}
+```{r, correct residual structure, results='hide', warning=FALSE, message=FALSE, error=FALSE}
+require(brms)
 
-# data.complete$TxD <- interaction(data.complete$target, data.complete$domain)
+model.data <- within(filter(data.complete, parcellation == 292), age_c_m <- round(age_c * 12))
 
-model1.data <- within(filter(data.complete, parcellation == 292), one1 <- one2 <- one3 <- 1L)
+model2.lmer = lmer(beta ~ target*domain*age_c_m + (1 + age_c_m | subjectID), 
+               data=model.data) #filter gets us just the rows from parcel 292
 
-model.1.corstr <- lme(beta ~ 1 + target*domain*age_c, 
-                      random = ~1 + age_c | subjectID/target/domain,
-                      correlation = corCAR1(form = ~ age_c),
-                      data=model1.data)
+model2.brm <- brms::brm(beta ~ 1 + age_c_m*target*domain + (1 + age_c_m | subjectID),
+                        chains = 4,
+                        cores = 4,
+                        save_model = './brm_model.stan',
+                        save_dso = TRUE,
+                        data = model.data)
 
-summary(model.1.corstr)
+model2.brm_ar <- brms::brm(beta ~ 1 + age_c_m*target*domain + (1 + age_c_m | subjectID), 
+                        autocor = brms::cor_ar(formula = ~ age_c_m | subjectID, p = 1),
+                        chains = 4,
+                        cores = 4,
+                        save_model = './brm_ar_model.stan',
+                        save_dso = TRUE,
+                        data = model.data)
+
 
 ```
+
+```{r}
+summary(model2.lmer)
+summary(model2.brm)
+summary(model2.brm_ar)
+
+coef(summary(model2.lmer))
+fixef(model2.brm)
+fixef(model2.brm_ar)
+```
+
