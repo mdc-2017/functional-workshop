@@ -6,3 +6,5 @@
 *.gz
 *.html
 .Rproj.user
+.Rhistory
+.RData
