@@ -1,4 +1,4 @@
-// generated with brms 1.10.0
+// generated with brms 1.7.0
 functions { 
 } 
 data { 
@@ -13,17 +13,19 @@ data {
   vector[N] Z_1_1; 
   vector[N] Z_1_2; 
   int<lower=1> NC_1; 
-  // data needed for ARMA correlations 
+
+  // data needed for ARMA effects 
   int<lower=0> Kar;  // AR order 
   int<lower=0> Kma;  // MA order 
-  int<lower=0> J_lag[N]; 
+  int<lower=1> Karma;  // max(Kma, Kar) 
+  vector[N] tg;  // indicates independent groups
   int prior_only;  // should the likelihood be ignored? 
 } 
 transformed data { 
-  int Kc = K - 1; 
+  int Kc; 
   matrix[N, K - 1] Xc;  // centered version of X 
   vector[K - 1] means_X;  // column means of X before centering 
-  int max_lag = max(Kar, Kma); 
+  Kc = K - 1;  // the intercept is removed from the design matrix 
   for (i in 2:K) { 
     means_X[i - 1] = mean(X[, i]); 
     Xc[, i - 1] = X[, i] - means_X[i - 1]; 
@@ -41,41 +43,47 @@ parameters {
 } 
 transformed parameters { 
   // group-level effects 
-  matrix[N_1, M_1] r_1 = (diag_pre_multiply(sd_1, L_1) * z_1)'; 
-  vector[N_1] r_1_1 = r_1[, 1]; 
-  vector[N_1] r_1_2 = r_1[, 2]; 
+  matrix[N_1, M_1] r_1; 
+  vector[N_1] r_1_1; 
+  vector[N_1] r_1_2; 
+  r_1 = (diag_pre_multiply(sd_1, L_1) * z_1)'; 
+  r_1_1 = r_1[, 1];  
+  r_1_2 = r_1[, 2];  
 } 
 model { 
-  vector[N] mu = Xc * b + temp_Intercept; 
+  vector[N] mu; 
   // objects storing residuals 
-  matrix[N, max_lag] E = rep_matrix(0, N, max_lag); 
+  matrix[N, Karma] E; 
   vector[N] e; 
+  mu = Xc * b + temp_Intercept; 
+  E = rep_matrix(0.0, N, Karma); 
   for (n in 1:N) { 
     mu[n] = mu[n] + (r_1_1[J_1[n]]) * Z_1_1[n] + (r_1_2[J_1[n]]) * Z_1_2[n]; 
-    // computation of ARMA correlations 
-    e[n] = Y[n] - mu[n]; 
-    for (i in 1:J_lag[n]) { 
-      E[n + 1, i] = e[n + 1 - i]; 
+    // computation of ARMA effects 
+    e[n] = (Y[n]) - mu[n]; 
+    for (i in 1:Karma) { 
+      if (n + 1 - i > 0 && n < N && tg[n + 1] == tg[n + 1 - i]) { 
+        E[n + 1, i] = e[n + 1 - i]; 
+      } 
     } 
     mu[n] = mu[n] + head(E[n], Kar) * ar; 
   } 
-  // priors including all constants 
-  target += student_t_lpdf(sigma | 3, 0, 10)
-    - 1 * student_t_lccdf(0 | 3, 0, 10); 
-  target += student_t_lpdf(sd_1 | 3, 0, 10)
-    - 2 * student_t_lccdf(0 | 3, 0, 10); 
-  target += lkj_corr_cholesky_lpdf(L_1 | 1); 
-  target += normal_lpdf(to_vector(z_1) | 0, 1); 
-  // likelihood including all constants 
+  // prior specifications 
+  sigma ~ student_t(3, 0, 10); 
+  sd_1 ~ student_t(3, 0, 10); 
+  L_1 ~ lkj_corr_cholesky(1); 
+  to_vector(z_1) ~ normal(0, 1); 
+  // likelihood contribution 
   if (!prior_only) { 
-    target += normal_lpdf(Y | mu, sigma); 
+    Y ~ normal(mu, sigma); 
   } 
 } 
 generated quantities { 
-  // actual population-level intercept 
-  real b_Intercept = temp_Intercept - dot_product(means_X, b); 
-  corr_matrix[M_1] Cor_1 = multiply_lower_tri_self_transpose(L_1); 
+  real b_Intercept;  // population-level intercept 
+  corr_matrix[M_1] Cor_1; 
   vector<lower=-1,upper=1>[NC_1] cor_1; 
+  b_Intercept = temp_Intercept - dot_product(means_X, b); 
   // take only relevant parts of correlation matrix 
+  Cor_1 = multiply_lower_tri_self_transpose(L_1); 
   cor_1[1] = Cor_1[1,2]; 
 } 

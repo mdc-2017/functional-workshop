@@ -1,0 +1,161 @@
+---
+title: "Untitled"
+author: "John Flournoy"
+date: "9/22/2017"
+output:
+  md_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=6, warning=FALSE, message=FALSE)
+```
+
+# Residual auto-correlation
+
+After we went over the tutorial on playing with extracted ROI values in a multilevel framework in R, Christy Rogers noted that we were not correctly accounting for the fact that we're moding age continuously, and thus with unequal spacing between our times of observation. The default error covariance structure does not correctly account for this, so we needed to find a way to specify the correct structure. For some designs, this is very easy to do in `nlme`, using the command `lme(..., correlation = corCAR1(form = ~ time_variable | grouping_variable))`. However, `lme` rquires that there is only a single observations per participant at every wave. In the ROI analysis example, we have a 2x2 factor design at every time of observation, and therefore have 4 observations per participant. Needless to say, `lme` complains. The best solution I've been able to find so far is to use `brms`, which is based on Stan. The estimation is Bayesian, but it's still pretty quick. He's a rough comparison.
+
+## quick, load the data
+
+and packages, and do other stuff that you've already seen in the `model_visualize_estimates` file.
+
+```{r, load packages}
+# set mirror from which to download packages
+osuRepo = 'http://ftp.osuosl.org/pub/cran/'
+
+if(!require(knitr)){
+  install.packages('knitr',repos=osuRepo)
+}
+if(!require(dplyr)){
+  install.packages('dplyr',repos=osuRepo)
+}
+if(!require(tidyr)){
+  install.packages('tidyr',repos=osuRepo)
+}
+if(!require(ggplot2)){
+  install.packages('ggplot2',repos=osuRepo)
+}
+if(!require(lme4)){
+  install.packages('lme4',repos=osuRepo)
+}
+if(!require(wesanderson)){
+  install.packages('wesanderson',repos=osuRepo)
+}
+if(!require(rmarkdown)){
+  install.packages('rmarkdown',repos=osuRepo)
+}
+
+# load parameter estimate delimited .txt file
+data <- read.table('../../results/ROI_analysis/parameterEstimates.txt', sep = " ", fill = TRUE, stringsAsFactors=FALSE)
+
+# load age covariates and rename variables
+age <- read.csv('../../data/covariates/age.csv') %>%
+  rename("subjectID" = Subj,
+         "wave" = wavenum)
+
+# tidy raw data
+data1 <- data %>% 
+  # rename variables
+  rename('subjectID' = V1,
+         'wave' = V2,
+         'con' = V3,
+         'parcellation' = V4,
+         'beta' = V5,
+         'sd' = V6) %>%
+  # convert con file names to condition names
+  mutate(target = ifelse(con %in% c('con_0001', 'con_0002'), 'self', 'other'), 
+         domain = ifelse(con %in% c('con_0001', 'con_0003'), 'academic', 'social'), 
+  # change data type to factor
+         parcellation = as.factor(parcellation),
+         target = as.factor(target),
+         domain = as.factor(domain)) %>%
+  # change to integer
+  extract(wave, 'wave', 't([0-3]{1})') %>%
+  mutate(wave = as.integer(wave))
+
+#Take every row in `age` that matches values in `data1` columns 'subjectID' and 'wave'
+merged <- left_join(data1, age, by = c('subjectID', 'wave')) %>%
+  mutate(age_c = age-mean(age, na.rm=TRUE))
+
+data.complete = merged %>%
+  na.omit(.)
+```
+
+## Correct AR strucutre
+
+Estimate the model a couple different ways.
+
+```{r, correct residual structure, results='hide', warning=FALSE, message=FALSE, error=FALSE}
+if(!require(brms)){
+  install.packages('brms',repos=osuRepo)
+}
+
+#brms::cor_ar can't handle totally continuous time -- it needs integer valued time, so we'll use months.
+model.data <- within(filter(data.complete, parcellation == 292), age_c_m <- round(age_c * 12))
+
+#A regular ole LMEM/HLM/MLM with the default error structure
+model2.lmer = lmer(beta ~ target*domain*age_c_m + (1 + age_c_m | subjectID), 
+               data=model.data) #filter gets us just the rows from parcel 292
+
+#The same HLM in brms
+model2.brm <- brms::brm(beta ~ 1 + age_c_m*target*domain + (1 + age_c_m | subjectID),
+                        chains = 4,
+                        iter = 5000,
+                        cores = 4,
+                        save_model = './brm_model.stan',
+                        save_dso = TRUE,
+                        data = model.data)
+
+#Now adding the cor_ar structure
+model2.brm_ar <- brms::brm(beta ~ 1 + age_c_m*target*domain + (1 + age_c_m | subjectID), 
+                        autocor = brms::cor_ar(formula = ~ age_c_m | subjectID, p = 1),
+                        chains = 4,
+                        iter = 5000,
+                        cores = 4,
+                        save_model = './brm_ar_model.stan',
+                        save_dso = TRUE,
+                        data = model.data)
+
+
+```
+
+```{r}
+summary(model2.lmer)
+summary(model2.brm)
+summary(model2.brm_ar)
+
+#this puts it in the same order as brms
+lmerorder <- c('(Intercept)',
+               'age_c_m',
+               'targetself',
+               'domainsocial',
+               'targetself:age_c_m',
+               'domainsocial:age_c_m',
+               'targetself:domainsocial',
+               'targetself:domainsocial:age_c_m')
+
+lmerfx <- coef(summary(model2.lmer))[lmerorder,]
+brmfx <- fixef(model2.brm)
+brmarfx <- fixef(model2.brm_ar)
+
+round(cbind(lmer=lmerfx[, 'Estimate'],
+            brm=brmfx[, 'Estimate'],
+            diff=lmerfx[, 'Estimate'] - brmfx[, 'Estimate']),5)
+
+round(cbind(brm=brmfx[, 'Estimate'],
+            brm_ar=brmarfx[, 'Estimate'],
+            diff=brmfx[, 'Estimate'] - brmarfx[, 'Estimate']),5)
+```
+
+## Some fun plots
+
+First, we play with lmer plots, showing model predicted values over time for each condition, and then the relation between observed and expected values for each condition.
+
+The `brms` plots are very Bayesian, showing the distribution of samples, and the sampling chains.
+
+```{r}
+plot(model2.lmer, fitted(.)~age_c_m | interaction(target, domain))
+plot(model2.lmer, beta~fitted(.) | interaction(target, domain), abline = c(0,1))
+plot(model2.brm, ask = F)
+plot(model2.brm_ar, ask = F)
+```
